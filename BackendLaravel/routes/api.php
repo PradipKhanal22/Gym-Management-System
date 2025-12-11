@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\TrainerController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CartController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -28,3 +29,13 @@ Route::apiResource('trainers', TrainerController::class);
 
 // Product API Routes
 Route::apiResource('products', ProductController::class);
+
+// Cart API Routes (Protected - requires authentication)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/cart', [CartController::class, 'index']);
+    Route::post('/cart', [CartController::class, 'store']);
+    Route::put('/cart/{id}', [CartController::class, 'update']);
+    Route::delete('/cart/{id}', [CartController::class, 'destroy']);
+    Route::delete('/cart-clear', [CartController::class, 'clear']);
+});
+

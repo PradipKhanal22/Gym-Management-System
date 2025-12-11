@@ -1,62 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Section from '../components/Section';
 import Button from '../components/Button';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-  category: string;
-}
+import { getCart, updateCartItemQuantity, removeFromCart, CartItem } from '../src/constant/cartUtils';
 
 const Cart: React.FC = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: 'Premium Whey Protein',
-      price: 49.99,
-      quantity: 2,
-      image: 'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=400&h=400&fit=crop',
-      category: 'Supplements'
-    },
-    {
-      id: 2,
-      name: 'Resistance Bands Set',
-      price: 29.99,
-      quantity: 1,
-      image: 'https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=400&h=400&fit=crop',
-      category: 'Equipment'
-    },
-    {
-      id: 3,
-      name: 'Gym Duffle Bag',
-      price: 39.99,
-      quantity: 1,
-      image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop',
-      category: 'Accessories'
-    }
-  ]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  const updateQuantity = (id: number, change: number) => {
-    setCartItems(items =>
-      items.map(item =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + change) }
-          : item
-      )
-    );
+  useEffect(() => {
+    // Load cart from backend
+    loadCart();
+
+    // Listen for cart updates
+    const handleCartUpdate = () => {
+      loadCart();
+    };
+
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    return () => window.removeEventListener('cartUpdated', handleCartUpdate);
+  }, []);
+
+  const loadCart = async () => {
+    const cart = await getCart();
+    setCartItems(cart);
   };
 
-  const removeItem = (id: number) => {
-    setCartItems(items => items.filter(item => item.id !== id));
+  const updateQuantity = async (id: number, newQuantity: number) => {
+    await updateCartItemQuantity(id, newQuantity);
+    loadCart();
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const removeItem = async (id: number) => {
+    await removeFromCart(id);
+    loadCart();
+  };
+
+  const subtotal = cartItems.reduce((sum, item) => sum + (parseFloat(item.product.price) * item.quantity), 0);
   const shipping = subtotal > 100 ? 0 : 9.99;
   const total = subtotal + shipping;
 
@@ -143,13 +124,13 @@ const Cart: React.FC = () => {
                     {/* Image */}
                     <div className="relative w-28 h-28 rounded-2xl overflow-hidden shrink-0 shadow-md">
                       <img 
-                        src={item.image} 
-                        alt={item.name}
+                        src={item.product.photo_path ? `http://localhost:8000/storage/${item.product.photo_path}` : 'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=400&h=400&fit=crop'} 
+                        alt={item.product.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
                       <div className="absolute top-2 left-2">
                         <span className="px-2 py-1 bg-primary/90 text-white text-xs font-bold rounded-full">
-                          {item.category}
+                          {item.product.category?.name || 'Product'}
                         </span>
                       </div>
                     </div>
@@ -157,17 +138,18 @@ const Cart: React.FC = () => {
                     {/* Details */}
                     <div className="flex-grow">
                       <h3 className="text-xl font-black text-slate-900 mb-2 group-hover:text-primary transition-colors">
-                        {item.name}
+                        {item.product.name}
                       </h3>
                       <p className="text-2xl font-black text-primary mb-4">
-                        ${item.price.toFixed(2)}
+                        ${parseFloat(item.product.price).toFixed(2)}
                       </p>
 
                       {/* Quantity Controls */}
                       <div className="flex items-center gap-3">
                         <button
-                          onClick={() => updateQuantity(item.id, -1)}
-                          className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-primary hover:text-white transition-all flex items-center justify-center font-bold shadow-sm"
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          disabled={item.quantity <= 1}
+                          className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-primary hover:text-white transition-all flex items-center justify-center font-bold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           <Minus className="w-4 h-4" />
                         </button>
@@ -175,12 +157,16 @@ const Cart: React.FC = () => {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => updateQuantity(item.id, 1)}
-                          className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-primary hover:text-white transition-all flex items-center justify-center font-bold shadow-sm"
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          disabled={item.quantity >= item.product.stock}
+                          className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-primary hover:text-white transition-all flex items-center justify-center font-bold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           <Plus className="w-4 h-4" />
                         </button>
                       </div>
+                      {item.quantity >= item.product.stock && (
+                        <p className="text-xs text-red-500 mt-1">Maximum stock reached</p>
+                      )}
                     </div>
 
                     {/* Remove Button */}

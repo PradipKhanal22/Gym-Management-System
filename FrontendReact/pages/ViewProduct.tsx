@@ -3,11 +3,14 @@ import { motion } from 'framer-motion';
 import Section from '../components/Section';
 import Button from '../components/Button';
 import { ShoppingCart, Star, Package, Shield, Truck, Heart, Minus, Plus, CheckCircle2 } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { productAPI } from '../src/constant/api/productAPI';
+import { addToCart } from '../src/constant/cartUtils';
+import { toast } from '../components/Toast';
 
 const ViewProduct: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [product, setProduct] = useState<any>(null);
@@ -60,6 +63,32 @@ const ViewProduct: React.FC = () => {
 
   const updateQuantity = (change: number) => {
     setQuantity(Math.max(1, quantity + change));
+  };
+
+  const handleAddToCart = async () => {
+    // Check if user is logged in
+    const user = localStorage.getItem('user');
+    if (!user) {
+      toast.error('Please login first to add items to cart');
+      navigate('/login');
+      return;
+    }
+
+    if (!product) return;
+
+    // Add product with selected quantity
+    let success = true;
+    for (let i = 0; i < quantity; i++) {
+      success = await addToCart(product);
+      if (!success) break;
+    }
+
+    if (success) {
+      toast.success(`${quantity} x ${product.name} added to cart!`);
+      setQuantity(1);
+    } else {
+      toast.error('Failed to add to cart. Please check stock availability.');
+    }
   };
 
   if (loading) {
@@ -251,10 +280,12 @@ const ViewProduct: React.FC = () => {
               <div className="flex justify-center">
                 <Button
                   size="sm"
-                  className="bg-gradient-to-r from-primary to-emerald-500 text-white hover:from-primary/90 hover:to-emerald-500/90 shadow-xl"
+                  onClick={handleAddToCart}
+                  disabled={!product || product.stock === 0}
+                  className="bg-gradient-to-r from-primary to-emerald-500 text-white hover:from-primary/90 hover:to-emerald-500/90 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ShoppingCart className="w-4 h-4 mr-2" />
-                  Add to Cart
+                  {product?.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
                 </Button>
               </div>
 

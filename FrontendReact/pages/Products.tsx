@@ -5,16 +5,40 @@ import Section from '../components/Section';
 import Button from '../components/Button';
 import { Product } from '../types';
 import { ShoppingCart, Package, Zap } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { productAPI } from '../src/constant/api/productAPI';
+import { addToCart } from '../src/constant/cartUtils';
+import { toast } from '../components/Toast';
 
 const Products: React.FC = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  const handleAddToCart = async (product: any, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Check if user is logged in
+    const user = localStorage.getItem('user');
+    if (!user) {
+      toast.error('Please login first to add items to cart');
+      navigate('/login');
+      return;
+    }
+
+    // Add to cart
+    const success = await addToCart(product);
+    if (success) {
+      toast.success(`${product.name} added to cart!`);
+    } else {
+      toast.error('Failed to add to cart. Please try again.');
+    }
+  };
 
   const fetchProducts = async () => {
     try {
@@ -132,8 +156,12 @@ const Products: React.FC = () => {
                   </div>
                   <h3 className="text-xl font-black text-slate-900 mb-2 group-hover:text-primary transition-colors">{product.name}</h3>
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-200">
-                    <span className="text-2xl font-black text-slate-900">Rs. {parseFloat(product.price).toFixed(2)}</span>
-                    <button className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white transition-all hover:scale-110 shadow-sm">
+                    <span className="text-2xl font-black text-slate-900">${parseFloat(product.price).toFixed(2)}</span>
+                    <button 
+                      onClick={(e) => handleAddToCart(product, e)}
+                      disabled={product.stock === 0}
+                      className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white transition-all hover:scale-110 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
                       <ShoppingCart size={18} />
                     </button>
                   </div>
