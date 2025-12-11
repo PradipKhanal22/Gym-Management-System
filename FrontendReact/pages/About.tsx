@@ -1,16 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Hero from '../components/Hero';
 import Section from '../components/Section';
 import Button from '../components/Button';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, Zap, Shield, Heart, Target, Twitter, Instagram, Linkedin, Award, Users2, TrendingUp } from 'lucide-react';
-
-const trainers = [
-  { name: "Alex Sterling", role: "Head Trainer & Founder", image: "https://images.unsplash.com/photo-1567598508481-65985588e295?w=400&h=500&fit=crop", specialty: "Strength & Conditioning" },
-  { name: "Maria Rodriguez", role: "Yoga & Mobility Specialist", image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=500&fit=crop", specialty: "Flexibility & Wellness" },
-  { name: "James 'The Tank'", role: "Powerlifting Coach", image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=500&fit=crop", specialty: "Powerlifting & Olympic Lifting" }
-];
+import { trainerAPI } from '../src/constant/api/trainerAPI';
 
 const achievements = [
   { number: "2023", label: "Founded", icon: <Award /> },
@@ -27,6 +22,26 @@ const values = [
 ];
 
 const About: React.FC = () => {
+  const [trainers, setTrainers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTrainers();
+  }, []);
+
+  const fetchTrainers = async () => {
+    try {
+      const response = await trainerAPI.getAll();
+      if (response.success) {
+        setTrainers(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching trainers:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       {/* Hero Section */}
@@ -212,74 +227,89 @@ const About: React.FC = () => {
               <span className="px-4 py-2 bg-primary/20 text-primary rounded-full text-sm font-bold uppercase tracking-wider">Expert Coaches</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
-              Meet The <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Team</span>
+              Meet The <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Trainers</span>
             </h2>
             <p className="text-slate-300 text-lg max-w-2xl mx-auto">Expert guidance from certified professionals who practice what they preach and are passionate about your success.</p>
           </motion.div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-[1200px] mx-auto px-6 relative z-10">
-          {trainers.map((trainer, idx) => (
-            <motion.div 
-              key={idx} 
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              viewport={{ once: true }}
-              className="group relative"
-            >
-              {/* Card Container */}
-              <div className="relative overflow-hidden rounded-3xl bg-white shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2">
-                {/* Image Container */}
-                <div className="relative h-[420px] overflow-hidden">
-                  <img 
-                    src={trainer.image} 
-                    alt={trainer.name} 
-                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
-                  />
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500"></div>
-                  
-                  {/* Top Accent Line */}
-                  <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-emerald-500 to-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left"></div>
-                </div>
-
-                {/* Content Section */}
-                <div className="p-8 bg-white">
-                  <h3 className="text-2xl font-black text-slate-900 mb-3 group-hover:text-primary transition-colors duration-300">{trainer.name}</h3>
-                  <p className="text-primary font-bold text-xs uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <span className="w-10 h-0.5 bg-primary"></span>
-                    {trainer.role}
-                  </p>
-                  <p className="text-slate-600 text-sm font-medium mb-5 leading-relaxed">{trainer.specialty}</p>
-                  
-                  {/* Social Links */}
-                  <div className="flex gap-4 pt-5 border-t border-slate-200">
-                    <button className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110">
-                      <Twitter size={18} />
-                    </button>
-                    <button className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110">
-                      <Instagram size={18} />
-                    </button>
-                    <button className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110">
-                      <Linkedin size={18} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Corner Accent */}
-                <div className="absolute top-4 right-4 w-12 h-12 border-t-2 border-r-2 border-primary/0 group-hover:border-primary/60 rounded-tr-2xl transition-all duration-500"></div>
-                
-                {/* Bottom Glow Effect */}
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          {loading ? (
+            // Loading skeleton
+            [...Array(3)].map((_, idx) => (
+              <div key={idx} className="animate-pulse">
+                <div className="bg-slate-200 h-[420px] rounded-3xl mb-4"></div>
+                <div className="bg-slate-200 h-6 w-3/4 rounded mb-2"></div>
+                <div className="bg-slate-200 h-4 w-1/2 rounded"></div>
               </div>
+            ))
+          ) : trainers.length > 0 ? (
+            trainers.map((trainer, idx) => (
+              <motion.div 
+                key={trainer.id} 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                viewport={{ once: true }}
+                className="group relative"
+              >
+                {/* Card Container */}
+                <div className="relative overflow-hidden rounded-3xl bg-white shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2">
+                  {/* Image Container */}
+                  <div className="relative h-[420px] overflow-hidden">
+                    <img 
+                      src={trainer.photo_path ? `http://localhost:8000/storage/${trainer.photo_path}` : 'https://images.unsplash.com/photo-1567598508481-65985588e295?w=400&h=500&fit=crop'} 
+                      alt={trainer.name} 
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+                    />
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500"></div>
+                    
+                    {/* Top Accent Line */}
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-emerald-500 to-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left"></div>
+                  </div>
 
-              {/* Card Shadow Accent */}
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-emerald-500 rounded-3xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500 -z-10"></div>
-            </motion.div>
-          ))}
+                  {/* Content Section */}
+                  <div className="p-8 bg-white">
+                    <h3 className="text-2xl font-black text-slate-900 mb-3 group-hover:text-primary transition-colors duration-300">{trainer.name}</h3>
+                    <p className="text-primary font-bold text-xs uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <span className="w-10 h-0.5 bg-primary"></span>
+                      {trainer.specialty}
+                    </p>
+                    <p className="text-slate-600 text-sm font-medium mb-5 leading-relaxed">{trainer.description}</p>
+                    
+                    {/* Social Links */}
+                    <div className="flex gap-4 pt-5 border-t border-slate-200">
+                      <button className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110">
+                        <Twitter size={18} />
+                      </button>
+                      <button className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110">
+                        <Instagram size={18} />
+                      </button>
+                      <button className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110">
+                        <Linkedin size={18} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Corner Accent */}
+                  <div className="absolute top-4 right-4 w-12 h-12 border-t-2 border-r-2 border-primary/0 group-hover:border-primary/60 rounded-tr-2xl transition-all duration-500"></div>
+                  
+                  {/* Bottom Glow Effect */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                </div>
+
+                {/* Card Shadow Accent */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-emerald-500 rounded-3xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500 -z-10"></div>
+              </motion.div>
+            ))
+          ) : (
+            <div className="col-span-3 text-center py-12">
+              <p className="text-white/70 text-lg">No trainers available at the moment.</p>
+            </div>
+          )}
         </div>
-      </Section>
+              </Section>
 
       {/* Why Choose Us Section */}
       <Section className="bg-gradient-to-b from-slate-50 to-white py-16">

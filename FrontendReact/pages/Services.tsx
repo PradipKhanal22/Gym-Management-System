@@ -1,43 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Hero from '../components/Hero';
 import Section from '../components/Section';
 import { Dumbbell, HeartPulse, Trophy, Users, Bike, BrainCircuit, Wifi, Coffee, Car, Lock, ShowerHead, Music, ArrowRight, CheckCircle2 } from 'lucide-react';
 import Button from '../components/Button';
 import { Link } from 'react-router-dom';
-
-const servicesList = [
-  { 
-    icon: <Dumbbell className="w-8 h-8" />, 
-    title: "Weight Training", 
-    desc: "Free weights, power racks, and plate-loaded machines for maximum hypertrophy." 
-  },
-  { 
-    icon: <HeartPulse className="w-8 h-8" />, 
-    title: "Cardio Zone", 
-    desc: "Treadmills, stair masters, and rowers equipped with entertainment systems." 
-  },
-  { 
-    icon: <Users className="w-8 h-8" />, 
-    title: "Group Classes", 
-    desc: "High-energy classes including HIIT, Yoga, and Spin led by star instructors." 
-  },
-  { 
-    icon: <Trophy className="w-8 h-8" />, 
-    title: "Competition Prep", 
-    desc: "Specialized coaching for bodybuilding, powerlifting, and athletic competitions." 
-  },
-  { 
-    icon: <Bike className="w-8 h-8" />, 
-    title: "Spin Studio", 
-    desc: "Immersive cycling experience with sound-reactive lighting and intense pacing." 
-  },
-  { 
-    icon: <BrainCircuit className="w-8 h-8" />, 
-    title: "Recovery Lab", 
-    desc: "Cryotherapy, infrared saunas, and massage guns to speed up your recovery." 
-  }
-];
+import { serviceAPI } from '../src/constant/api/serviceAPI';
 
 const amenities = [
   { icon: <Wifi />, name: "Free High-Speed WiFi" },
@@ -49,6 +17,26 @@ const amenities = [
 ];
 
 const Services: React.FC = () => {
+  const [services, setServices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const fetchServices = async () => {
+    try {
+      const response = await serviceAPI.getAll();
+      if (response.success) {
+        setServices(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching services:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       {/* Hero Section */}
@@ -101,23 +89,47 @@ const Services: React.FC = () => {
            </motion.div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {servicesList.map((s, idx) => (
-            <motion.div 
-              key={idx} 
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              viewport={{ once: true }}
-              className="relative bg-white p-8 rounded-3xl border border-slate-200 hover:border-primary transition-all hover:-translate-y-2 hover:shadow-2xl group"
-            >
-              <div className="w-16 h-16 bg-gradient-to-br from-primary to-emerald-500 rounded-2xl flex items-center justify-center mb-6 text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg shadow-primary/20">
-                {s.icon}
+          {loading ? (
+            // Loading skeleton
+            [...Array(6)].map((_, idx) => (
+              <div key={idx} className="animate-pulse">
+                <div className="bg-slate-200 h-16 w-16 rounded-2xl mb-6"></div>
+                <div className="bg-slate-200 h-6 w-3/4 rounded mb-3"></div>
+                <div className="bg-slate-200 h-4 w-full rounded mb-2"></div>
+                <div className="bg-slate-200 h-4 w-5/6 rounded"></div>
               </div>
-              <h3 className="text-2xl font-black text-slate-900 mb-3 group-hover:text-primary transition-colors">{s.title}</h3>
-              <p className="text-slate-600 leading-relaxed">{s.desc}</p>
-              <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
-            </motion.div>
-          ))}
+            ))
+          ) : services.length > 0 ? (
+            services.map((s, idx) => (
+              <motion.div 
+                key={s.id} 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                viewport={{ once: true }}
+                className="relative bg-white p-8 rounded-3xl border border-slate-200 hover:border-primary transition-all hover:-translate-y-2 hover:shadow-2xl group"
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-primary to-emerald-500 rounded-2xl flex items-center justify-center mb-6 text-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg shadow-primary/20 overflow-hidden p-3">
+                  {s.photo_path ? (
+                    <img 
+                      src={`http://localhost:8000/storage/${s.photo_path}`} 
+                      alt={s.name} 
+                      className="w-full h-full object-contain rounded-full"
+                    />
+                  ) : (
+                    <Dumbbell className="w-8 h-8" />
+                  )}
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 mb-3 group-hover:text-primary transition-colors">{s.name}</h3>
+                <p className="text-slate-600 leading-relaxed">{s.description}</p>
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
+              </motion.div>
+            ))
+          ) : (
+            <div className="col-span-3 text-center py-12">
+              <p className="text-slate-600 text-lg">No services available at the moment.</p>
+            </div>
+          )}
         </div>
       </Section>
 
