@@ -59,3 +59,32 @@ export const login = async (credentials) => {
         throw error;
     }
 };
+
+// Logout user
+export const logout = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/logout`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+        });
+
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('Server returned non-JSON response. Please ensure the backend is running.');
+        }
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Logout failed');
+        }
+
+        return data;
+    } catch (error) {
+        console.error('Logout API Error:', error);
+        throw error;
+    }
+};

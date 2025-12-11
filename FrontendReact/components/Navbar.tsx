@@ -1,13 +1,60 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Dumbbell, ShoppingBag } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, Dumbbell, ShoppingBag, User, LogOut, UserCircle } from 'lucide-react';
 import Button from './Button';
+import { logout } from '../src/constant/authAPI';
+import { toast } from './Toast';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Check for logged-in user on component mount
+  useEffect(() => {
+    const loadUser = () => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (error) {
+          console.error('Error parsing user data:', error);
+          localStorage.removeItem('user');
+        }
+      } else {
+        setUser(null);
+      }
+    };
+
+    // Load user on mount
+    loadUser();
+
+    // Listen for user login/logout events
+    const handleUserChange = (event?: any) => {
+      if (event?.detail) {
+        // Use user data from event if available
+        setUser(event.detail);
+      } else {
+        // Otherwise, reload from localStorage
+        loadUser();
+      }
+    };
+
+    window.addEventListener('userLoggedIn', handleUserChange);
+    window.addEventListener('userLoggedOut', handleUserChange);
+    window.addEventListener('storage', loadUser);
+
+    return () => {
+      window.removeEventListener('userLoggedIn', handleUserChange);
+      window.removeEventListener('userLoggedOut', handleUserChange);
+      window.removeEventListener('storage', loadUser);
+    };
+  }, []);
 
   // Handle scroll effect
   useEffect(() => {
@@ -41,16 +88,36 @@ const Navbar: React.FC = () => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
     };
 
-    if (isOpen) {
+    if (isOpen || showUserMenu) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isOpen, showUserMenu]);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      localStorage.removeItem('user');
+      setUser(null);
+      setShowUserMenu(false);
+      toast.success('Logged out successfully');
+      
+      // Dispatch custom event to notify other components
+      window.dispatchEvent(new Event('userLoggedOut'));
+      
+      navigate('/');
+    } catch (error: any) {
+      toast.error(error.message || 'Logout failed');
+    }
+  };
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -100,11 +167,52 @@ const Navbar: React.FC = () => {
               ))}
 
               <div className="flex items-center gap-4 ml-6">
-                <Link to="/login">
-                  <Button variant="outline" className="border-slate-300 hover:border-primary hover:text-primary font-bold text-sm px-6 py-2.5 transition-all duration-300">
-                    Login
-                  </Button>
-                </Link>
+                {user ? (
+                  <div className="relative" ref={userMenuRef}>
+                    <button
+                      onMouseEnter={() => setShowUserMenu(true)}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-lg border-2 border-slate-300 hover:border-primary transition-all duration-300 group"
+                    >
+                      <UserCircle className="w-5 h-5 text-primary" />
+                      <span className="text-sm font-bold text-slate-700 group-hover:text-primary">
+                        Hi, {user.name.split(' ')[0]}
+                      </span>
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {showUserMenu && (
+                      <div
+                        onMouseEnter={() => setShowUserMenu(true)}
+                        onMouseLeave={() => setShowUserMenu(false)}
+                        className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-2xl border-2 border-slate-200 overflow-hidden z-50"
+                      >
+                        <div className="p-2">
+                          <Link
+                            to="/my-details"
+                            className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 transition-colors"
+                            onClick={() => setShowUserMenu(false)}
+                          >
+                            <User className="w-4 h-4 text-slate-600" />
+                            <span className="text-sm font-semibold text-slate-700">My Details</span>
+                          </Link>
+                          <button
+                            onClick={handleLogout}
+                            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-50 transition-colors text-left"
+                          >
+                            <LogOut className="w-4 h-4 text-red-600" />
+                            <span className="text-sm font-semibold text-red-600">Logout</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link to="/login">
+                    <Button variant="outline" className="border-slate-300 hover:border-primary hover:text-primary font-bold text-sm px-6 py-2.5 transition-all duration-300">
+                      Login
+                    </Button>
+                  </Link>
+                )}
 
                 <Link to="/cart" className="relative group">
                   <ShoppingBag className="w-6 h-6 text-slate-700 group-hover:text-primary transition-colors duration-300" />
@@ -170,14 +278,48 @@ const Navbar: React.FC = () => {
 
         {/* Action Buttons */}
         <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-slate-50 to-transparent border-t border-slate-200">
-          <Link to="/login" className="block w-full" onClick={() => setIsOpen(false)}>
-            <Button
-              variant="primary"
-              className="w-full py-5 text-lg font-bold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
-            >
-              Login Now
-            </Button>
-          </Link>
+          {user ? (
+            <div className="space-y-4">
+              <div className="p-4 bg-gradient-to-r from-primary to-emerald-500 rounded-xl text-white">
+                <div className="flex items-center gap-3 mb-3">
+                  <UserCircle className="w-10 h-10" />
+                  <div>
+                    <p className="font-bold">Hi, {user.name}</p>
+                    <p className="text-xs opacity-90 truncate">{user.email}</p>
+                  </div>
+                </div>
+              </div>
+
+              <Link
+                to="/my-details"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg bg-white border-2 border-slate-200 hover:border-primary transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                <User className="w-5 h-5 text-slate-600" />
+                <span className="text-sm font-bold text-slate-700">My Details</span>
+              </Link>
+
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  handleLogout();
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-red-50 hover:bg-red-100 transition-colors"
+              >
+                <LogOut className="w-5 h-5 text-red-600" />
+                <span className="text-sm font-bold text-red-600">Logout</span>
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" className="block w-full" onClick={() => setIsOpen(false)}>
+              <Button
+                variant="primary"
+                className="w-full py-5 text-lg font-bold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
+              >
+                Login Now
+              </Button>
+            </Link>
+          )}
 
           <Link
             to="/cart"

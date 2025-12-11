@@ -27,6 +27,13 @@ const Login: React.FC = () => {
         
         toast.success(response.message);
         
+        // Dispatch custom event to notify Navbar and other components
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent('userLoggedIn', { 
+            detail: response.data.user 
+          }));
+        }, 0);
+        
         // Redirect based on user role
         setTimeout(() => {
           if (response.data.user.role === 'admin') {

@@ -172,7 +172,7 @@ const ProductList = () => {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-base font-black text-slate-900">${parseFloat(product.price).toFixed(2)}</p>
+                          <p className="text-base font-black text-slate-900">Rs.{parseFloat(product.price).toFixed(2)}</p>
                         </td>
                         <td className="px-6 py-4">
                           <p className="text-sm text-slate-600 line-clamp-2">
