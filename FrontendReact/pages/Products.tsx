@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Hero from '../components/Hero';
 import Section from '../components/Section';
@@ -6,20 +6,29 @@ import Button from '../components/Button';
 import { Product } from '../types';
 import { ShoppingCart, Package, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-const products: Product[] = [
-  { id: 1, name: "NeonFit Whey Protein", price: 49.99, category: "Supplements", image: "https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=400&h=400&fit=crop" },
-  { id: 2, name: "Pre-Workout Ignition", price: 34.99, category: "Supplements", image: "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=400&h=400&fit=crop" },
-  { id: 3, name: "Performance Tee", price: 29.99, category: "Apparel", image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop" },
-  { id: 4, name: "Lifting Straps", price: 14.99, category: "Gear", image: "https://images.unsplash.com/photo-1584735175097-719d848f8449?w=400&h=400&fit=crop" },
-  { id: 5, name: "Neon Shaker Bottle", price: 9.99, category: "Accessories", image: "https://imgs.search.brave.com/D_C2av21W51qa6iz_0N3Grc-prdgzEPZiG2eQHIzjzQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9iZWFz/dGxpZmUuaW4vY2Ru/L3Nob3AvZmlsZXMv/Z3JlZW5zaGFrZXIz/LmpwZz92PTE3Mzc0/NDgxMjAmd2lkdGg9/MTQ0NQ" },
-  { id: 6, name: "Gym Bag Duffle", price: 59.99, category: "Gear", image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop" },
-  { id: 7, name: "Training Hoodie", price: 54.99, category: "Apparel", image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&h=400&fit=crop" },
-  { id: 8, name: "Recovery Foam Roller", price: 24.99, category: "Accessories", image: "https://imgs.search.brave.com/8dZIbstN7gcmvjzEi-KrvLPQE9idnSbi84bP65SMb08/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91cy5m/bGFtaW5maXRuZXNz/LmNvbS9jZG4vc2hv/cC9wcm9kdWN0cy9m/bGV4aWVhc2UtZm9h/bS1yZWNvdmVyeS1y/b2xsZXItNzA0ODUw/XzcwMHg3MDAuanBn/P3Y9MTY5ODY5NTY1/NQ" },
-  { id: 9, name: "Creatine Monohydrate", price: 29.99, category: "Supplements", image: "https://imgs.search.brave.com/BM15zEbIAYQGAq-rr_9yEIyL--NnhHiNWtdD7M26uik/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzcxWDh6SkZ3SG1M/LmpwZw" },
-];
+import { productAPI } from '../src/constant/api/productAPI';
 
 const Products: React.FC = () => {
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await productAPI.getAll();
+      if (response.success) {
+        setProducts(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       {/* Hero Section */}
@@ -73,46 +82,70 @@ const Products: React.FC = () => {
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {products.map((product, idx) => (
-            <motion.div 
-              key={product.id} 
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.08 }}
-              viewport={{ once: true }}
-              className="group bg-white rounded-3xl overflow-hidden border border-slate-200 hover:border-primary transition-all hover:-translate-y-2 hover:shadow-2xl relative"
-            >
-              <div className="relative overflow-hidden aspect-square">
-                <img 
-                  src={product.image} 
-                  alt={product.name} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                   <Link to={`/product/${product.id}`}>
-                     <Button variant="primary" className="scale-90 group-hover:scale-100 transition-transform bg-primary hover:bg-primary/90 shadow-lg">View Details</Button>
-                   </Link>
-                </div>
-                <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">
-                  {product.category}
-                </div>
+          {loading ? (
+            // Loading skeleton
+            [...Array(6)].map((_, idx) => (
+              <div key={idx} className="animate-pulse">
+                <div className="bg-slate-200 h-80 rounded-3xl mb-4"></div>
+                <div className="bg-slate-200 h-6 w-3/4 rounded mb-2"></div>
+                <div className="bg-slate-200 h-8 w-1/2 rounded"></div>
               </div>
-              <div className="p-6">
-                <div className="text-xs text-primary uppercase font-bold tracking-widest mb-2 flex items-center gap-2">
-                  <span className="w-6 h-0.5 bg-primary"></span>
-                  {product.category}
+            ))
+          ) : products.length > 0 ? (
+            products.map((product, idx) => (
+              <motion.div 
+                key={product.id} 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.08 }}
+                viewport={{ once: true }}
+                className="group bg-white rounded-3xl overflow-hidden border border-slate-200 hover:border-primary transition-all hover:-translate-y-2 hover:shadow-2xl relative"
+              >
+                <div className="relative overflow-hidden aspect-square">
+                  <img 
+                    src={product.photo_path ? `http://localhost:8000/storage/${product.photo_path}` : 'https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=400&h=400&fit=crop'} 
+                    alt={product.name} 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                     <Link to={`/product/${product.id}`}>
+                       <Button variant="primary" className="scale-90 group-hover:scale-100 transition-transform bg-primary hover:bg-primary/90 shadow-lg">View Details</Button>
+                     </Link>
+                  </div>
+                  {product.stock > 0 ? (
+                    <div className="absolute top-4 left-4 bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                      In Stock
+                    </div>
+                  ) : (
+                    <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                      Out of Stock
+                    </div>
+                  )}
+                  <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">
+                    {product.category?.name || 'Product'}
+                  </div>
                 </div>
-                <h3 className="text-xl font-black text-slate-900 mb-2 group-hover:text-primary transition-colors">{product.name}</h3>
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-200">
-                  <span className="text-2xl font-black text-slate-900">${product.price}</span>
-                  <button className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white transition-all hover:scale-110 shadow-sm">
-                    <ShoppingCart size={18} />
-                  </button>
+                <div className="p-6">
+                  <div className="text-xs text-primary uppercase font-bold tracking-widest mb-2 flex items-center gap-2">
+                    <span className="w-6 h-0.5 bg-primary"></span>
+                    {product.category?.name || 'Uncategorized'}
+                  </div>
+                  <h3 className="text-xl font-black text-slate-900 mb-2 group-hover:text-primary transition-colors">{product.name}</h3>
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-200">
+                    <span className="text-2xl font-black text-slate-900">Rs. {parseFloat(product.price).toFixed(2)}</span>
+                    <button className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white transition-all hover:scale-110 shadow-sm">
+                      <ShoppingCart size={18} />
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-            </motion.div>
-          ))}
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+              </motion.div>
+            ))
+          ) : (
+            <div className="col-span-3 text-center py-12">
+              <p className="text-slate-600 text-lg">No products available at the moment.</p>
+            </div>
+          )}
         </div>
       </Section>
 

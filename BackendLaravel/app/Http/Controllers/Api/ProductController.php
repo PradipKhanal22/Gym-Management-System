@@ -55,6 +55,7 @@ class ProductController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
+            'stock' => $request->stock,
             'photo_path' => $photoPath
         ]);
 
@@ -94,6 +95,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
             'photo' => 'nullable|sometimes|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
@@ -118,6 +120,7 @@ class ProductController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
+            'stock' => $request->stock,
             'photo_path' => $photoPath
         ]);
 

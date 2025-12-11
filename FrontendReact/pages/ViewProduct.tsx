@@ -1,72 +1,110 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Section from '../components/Section';
 import Button from '../components/Button';
 import { ShoppingCart, Star, Package, Shield, Truck, Heart, Minus, Plus, CheckCircle2 } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
+import { productAPI } from '../src/constant/api/productAPI';
 
 const ViewProduct: React.FC = () => {
   const { id } = useParams();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
+  const [loadingRelated, setLoadingRelated] = useState(true);
 
-  // Mock product data - in real app, this would be fetched based on ID
-  const product = {
-    id: 1,
-    name: "NeonFit Whey Protein",
-    price: 49.99,
-    category: "Supplements",
-    rating: 4.8,
-    reviews: 234,
-    inStock: true,
-    description: "Premium quality whey protein isolate designed for optimal muscle recovery and growth. Each serving delivers 25g of pure protein with minimal carbs and fats.",
-    images: [
-      "https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=800&h=800&fit=crop",
-      "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=800&h=800&fit=crop",
-      "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&h=800&fit=crop"
-    ],
-    features: [
-      "25g of protein per serving",
-      "Fast-absorbing whey isolate",
-      "Zero artificial sweeteners",
-      "Gluten-free formula",
-      "Available in 5 flavors",
-      "30 servings per container"
-    ],
-    specifications: {
-      "Serving Size": "30g",
-      "Servings Per Container": "30",
-      "Protein": "25g",
-      "Carbohydrates": "2g",
-      "Fat": "1g",
-      "Calories": "120"
-    }
-  };
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (!id) return;
+      setLoading(true);
+      try {
+        const response = await productAPI.getById(id);
+        if (response.success) {
+          setProduct(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching product:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const relatedProducts = [
-    {
-      id: 2,
-      name: "Pre-Workout Ignition",
-      price: 34.99,
-      image: "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=400&h=400&fit=crop"
-    },
-    {
-      id: 9,
-      name: "Creatine Monohydrate",
-      price: 29.99,
-      image: "https://imgs.search.brave.com/BM15zEbIAYQGAq-rr_9yEIyL--NnhHiNWtdD7M26uik/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzcxWDh6SkZ3SG1M/LmpwZw"
-    },
-    {
-      id: 5,
-      name: "Neon Shaker Bottle",
-      price: 9.99,
-      image: "https://imgs.search.brave.com/D_C2av21W51qa6iz_0N3Grc-prdgzEPZiG2eQHIzjzQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9iZWFz/dGxpZmUuaW4vY2Ru/L3Nob3AvZmlsZXMv/Z3JlZW5zaGFrZXIz/LmpwZz92PTE3Mzc0/NDgxMjAmd2lkdGg9/MTQ0NQ"
+    fetchProduct();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchRelatedProducts = async () => {
+      setLoadingRelated(true);
+      try {
+        const response = await productAPI.getAll();
+        if (response.success) {
+          // Filter out current product and limit to 3 items
+          const filtered = response.data
+            .filter((p: any) => p.id.toString() !== id)
+            .slice(0, 3);
+          setRelatedProducts(filtered);
+        }
+      } catch (error) {
+        console.error('Error fetching related products:', error);
+      } finally {
+        setLoadingRelated(false);
+      }
+    };
+
+    if (id) {
+      fetchRelatedProducts();
     }
-  ];
+  }, [id]);
 
   const updateQuantity = (change: number) => {
     setQuantity(Math.max(1, quantity + change));
   };
+
+  if (loading) {
+    return (
+      <Section className="bg-white py-16 mt-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="space-y-4">
+              <div className="animate-pulse bg-slate-200 aspect-square rounded-3xl"></div>
+              <div className="grid grid-cols-3 gap-4">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="animate-pulse bg-slate-200 aspect-square rounded-2xl"></div>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-6">
+              <div className="animate-pulse bg-slate-200 h-8 w-32 rounded-full"></div>
+              <div className="animate-pulse bg-slate-200 h-12 w-3/4 rounded"></div>
+              <div className="animate-pulse bg-slate-200 h-6 w-1/2 rounded"></div>
+              <div className="animate-pulse bg-slate-200 h-16 w-1/3 rounded"></div>
+              <div className="animate-pulse bg-slate-200 h-24 w-full rounded-2xl"></div>
+            </div>
+          </div>
+        </div>
+      </Section>
+    );
+  }
+
+  if (!product) {
+    return (
+      <Section className="bg-white py-16 mt-20">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-3xl font-black text-slate-900 mb-4">Product Not Found</h2>
+          <p className="text-slate-600 mb-8">The product you're looking for doesn't exist.</p>
+          <Link to="/products">
+            <Button variant="primary">Back to Products</Button>
+          </Link>
+        </div>
+      </Section>
+    );
+  }
+
+  const productImage = product.photo_path 
+    ? `http://localhost:8000/storage/${product.photo_path}` 
+    : 'https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=800&h=800&fit=crop';
 
   return (
     <>
@@ -83,7 +121,7 @@ const ViewProduct: React.FC = () => {
             <span>/</span>
             <Link to="/products" className="hover:text-primary transition-colors">Products</Link>
             <span>/</span>
-            <span className="text-slate-900 font-semibold">{product.name}</span>
+            <span className="text-slate-900 font-semibold">{product?.name || 'Product'}</span>
           </motion.div>
 
           <div className="grid lg:grid-cols-2 gap-12">
@@ -96,36 +134,33 @@ const ViewProduct: React.FC = () => {
               {/* Main Image */}
               <div className="relative aspect-square rounded-3xl overflow-hidden border-2 border-slate-200 shadow-xl">
                 <img
-                  src={product.images[selectedImage]}
+                  src={productImage}
                   alt={product.name}
                   className="w-full h-full object-cover"
                 />
-                {product.inStock && (
+                {product.stock > 0 ? (
                   <div className="absolute top-4 left-4 px-4 py-2 bg-emerald-500 text-white rounded-full text-sm font-bold shadow-lg">
-                    In Stock
+                    In Stock ({product.stock} available)
+                  </div>
+                ) : (
+                  <div className="absolute top-4 left-4 px-4 py-2 bg-red-500 text-white rounded-full text-sm font-bold shadow-lg">
+                    Out of Stock
                   </div>
                 )}
               </div>
 
-              {/* Thumbnail Images */}
+              {/* Single Thumbnail for now */}
               <div className="grid grid-cols-3 gap-4">
-                {product.images.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(index)}
-                    className={`aspect-square rounded-2xl overflow-hidden border-2 transition-all ${
-                      selectedImage === index
-                        ? 'border-primary shadow-lg scale-105'
-                        : 'border-slate-200 hover:border-primary/50'
-                    }`}
-                  >
-                    <img
-                      src={image}
-                      alt={`${product.name} ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
+                <button
+                  onClick={() => setSelectedImage(0)}
+                  className="aspect-square rounded-2xl overflow-hidden border-2 border-primary shadow-lg scale-105"
+                >
+                  <img
+                    src={productImage}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
               </div>
             </motion.div>
 
@@ -138,7 +173,7 @@ const ViewProduct: React.FC = () => {
               {/* Category Badge */}
               <div className="inline-block">
                 <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold uppercase tracking-wider">
-                  {product.category}
+                  {product.category?.name || 'Product'}
                 </span>
               </div>
 
@@ -147,14 +182,14 @@ const ViewProduct: React.FC = () => {
                 {product.name}
               </h1>
 
-              {/* Rating */}
+              {/* Rating - Static for now */}
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
                       className={`w-5 h-5 ${
-                        i < Math.floor(product.rating)
+                        i < 4
                           ? 'fill-yellow-400 text-yellow-400'
                           : 'text-slate-300'
                       }`}
@@ -162,27 +197,27 @@ const ViewProduct: React.FC = () => {
                   ))}
                 </div>
                 <span className="text-slate-600 font-semibold">
-                  {product.rating} ({product.reviews} reviews)
+                  4.5 (50+ reviews)
                 </span>
               </div>
 
               {/* Price */}
               <div className="py-6 border-y border-slate-200">
                 <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">
-                  ${product.price}
+                  Rs. {parseFloat(product.price).toFixed(2)}
                 </div>
               </div>
 
               {/* Description */}
               <p className="text-slate-600 text-lg leading-relaxed">
-                {product.description}
+                {product.description || 'No description available for this product.'}
               </p>
 
-              {/* Key Features */}
+              {/* Key Features - Placeholder if not available */}
               <div className="bg-slate-50 rounded-2xl p-6">
                 <h3 className="text-lg font-black text-slate-900 mb-4">Key Features</h3>
                 <div className="grid grid-cols-2 gap-3">
-                  {product.features.map((feature, index) => (
+                  {['Premium Quality', 'Fast Delivery', 'Best Price', 'Money Back Guarantee'].map((feature, index) => (
                     <div key={index} className="flex items-center gap-2 text-slate-700">
                       <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />
                       <span className="text-sm font-medium">{feature}</span>
@@ -243,8 +278,8 @@ const ViewProduct: React.FC = () => {
         </div>
       </Section>
 
-      {/* Product Specifications */}
-      <Section className="bg-gradient-to-b from-slate-50 to-white py-16">
+      {/* Product Specifications - Hidden for now since backend doesn't provide this data */}
+      {/* <Section className="bg-gradient-to-b from-slate-50 to-white py-16">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -262,17 +297,12 @@ const ViewProduct: React.FC = () => {
 
             <div className="bg-white rounded-3xl p-8 shadow-lg border border-slate-200">
               <div className="grid md:grid-cols-2 gap-6">
-                {Object.entries(product.specifications).map(([key, value], index) => (
-                  <div key={index} className="flex justify-between items-center p-4 bg-slate-50 rounded-xl">
-                    <span className="font-black text-slate-700">{key}</span>
-                    <span className="font-bold text-primary">{value}</span>
-                  </div>
-                ))}
+                Specifications would go here
               </div>
             </div>
           </motion.div>
         </div>
-      </Section>
+      </Section> */}
 
       {/* Related Products */}
       <Section className="bg-white py-16">
@@ -294,37 +324,52 @@ const ViewProduct: React.FC = () => {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
-              {relatedProducts.map((item, index) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all border border-slate-200 group"
-                >
-                  <div className="relative h-64 overflow-hidden">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
+              {loadingRelated ? (
+                // Loading skeleton for related products
+                [...Array(3)].map((_, idx) => (
+                  <div key={idx} className="animate-pulse">
+                    <div className="bg-slate-200 h-64 rounded-3xl mb-4"></div>
+                    <div className="bg-slate-200 h-6 w-3/4 rounded mb-2"></div>
+                    <div className="bg-slate-200 h-8 w-1/2 rounded"></div>
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-black text-slate-900 mb-2 group-hover:text-primary transition-colors">
-                      {item.name}
-                    </h3>
-                    <div className="flex items-center justify-between">
-                      <p className="text-2xl font-black text-primary">${item.price}</p>
-                      <Link to={`/product/${item.id}`}>
-                        <Button className="w-full justify-center bg-gradient-to-r from-primary to-emerald-500 text-white hover:from-primary/90 hover:to-emerald-500/90 shadow-lg">
-                          View
-                        </Button>
-                      </Link>
+                ))
+              ) : relatedProducts.length > 0 ? (
+                relatedProducts.map((item, index) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all border border-slate-200 group"
+                  >
+                    <div className="relative h-64 overflow-hidden">
+                      <img
+                        src={item.photo_path ? `http://localhost:8000/storage/${item.photo_path}` : 'https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=400&h=400&fit=crop'}
+                        alt={item.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                    <div className="p-6">
+                      <h3 className="text-xl font-black text-slate-900 mb-2 group-hover:text-primary transition-colors">
+                        {item.name}
+                      </h3>
+                      <div className="flex items-center justify-between">
+                        <p className="text-2xl font-black text-primary">Rs. {parseFloat(item.price).toFixed(2)}</p>
+                        <Link to={`/product/${item.id}`}>
+                          <Button className="w-full justify-center bg-gradient-to-r from-primary to-emerald-500 text-white hover:from-primary/90 hover:to-emerald-500/90 shadow-lg">
+                            View
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))
+              ) : (
+                <div className="col-span-3 text-center py-8">
+                  <p className="text-slate-600">No related products available.</p>
+                </div>
+              )}
             </div>
           </motion.div>
         </div>

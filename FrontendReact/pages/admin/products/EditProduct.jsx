@@ -18,6 +18,7 @@ const EditProduct = () => {
     name: '',
     description: '',
     price: '',
+    stock: '',
   });
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState('');
@@ -51,6 +52,7 @@ const EditProduct = () => {
           name: product.name,
           description: product.description || '',
           price: product.price,
+          stock: product.stock || 0,
         });
         if (product.photo_path) {
           setExistingPhotoPath(product.photo_path);
@@ -95,6 +97,7 @@ const EditProduct = () => {
       data.append('name', formData.name);
       data.append('description', formData.description);
       data.append('price', formData.price);
+      data.append('stock', formData.stock || '0');
       data.append('_method', 'PUT'); // Laravel method spoofing
       if (photo) {
         data.append('photo', photo);
@@ -215,6 +218,24 @@ const EditProduct = () => {
                   onChange={handleChange}
                   className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-primary focus:outline-none font-semibold text-slate-900 transition-all"
                   placeholder="0.00"
+                />
+              </div>
+
+              {/* Stock */}
+              <div className="mb-6">
+                <label className="block text-sm font-black text-slate-700 mb-2 uppercase tracking-wider">
+                  Stock *
+                </label>
+                <input
+                  type="number"
+                  name="stock"
+                  required
+                  min="0"
+                  step="1"
+                  value={formData.stock}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-primary focus:outline-none font-semibold text-slate-900 transition-all"
+                  placeholder="0"
                 />
               </div>
 

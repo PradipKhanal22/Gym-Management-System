@@ -278,18 +278,7 @@ const About: React.FC = () => {
                     </p>
                     <p className="text-slate-600 text-sm font-medium mb-5 leading-relaxed">{trainer.description}</p>
                     
-                    {/* Social Links */}
-                    <div className="flex gap-4 pt-5 border-t border-slate-200">
-                      <button className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110">
-                        <Twitter size={18} />
-                      </button>
-                      <button className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110">
-                        <Instagram size={18} />
-                      </button>
-                      <button className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110">
-                        <Linkedin size={18} />
-                      </button>
-                    </div>
+                    
                   </div>
 
                   {/* Corner Accent */}
