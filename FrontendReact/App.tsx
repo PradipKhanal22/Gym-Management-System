@@ -14,6 +14,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import MyDetails from './pages/MyDetails';
 import AdminDashboard from './pages/admin/Dashboard';
 import ServiceList from './pages/admin/services/ServiceList';
 import AddService from './pages/admin/services/AddService';
@@ -73,6 +74,7 @@ const App: React.FC = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/my-details" element={<MyDetails />} />
           
           {/* Admin Routes */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
