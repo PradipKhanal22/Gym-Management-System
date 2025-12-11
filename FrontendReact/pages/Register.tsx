@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Button from '../components/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Dumbbell, Eye, EyeOff, Zap, User, Mail, Phone } from 'lucide-react';
 import Section from '../components/Section';
+import { register } from '../src/constant/authAPI';
+import { toast } from '../components/Toast';
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -16,15 +18,52 @@ const Register: React.FC = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match!');
+      toast.error('Passwords do not match!');
       return;
     }
-    console.log('Registration attempt', formData);
-    alert('Registration successful (Demo)');
+
+    if (formData.password.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      const payload = {
+        name: formData.firstName,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+        password_confirmation: formData.confirmPassword
+      };
+      
+      console.log('Sending registration request:', payload);
+      
+      const response = await register(payload);
+      
+      console.log('Registration response:', response);
+      
+      if (response.success) {
+        toast.success('Registration successful! Redirecting to login...');
+        
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
+      }
+    } catch (error: any) {
+      console.error('Registration error:', error);
+      toast.error(error.message || 'Registration failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,7 +161,6 @@ const Register: React.FC = () => {
                     className="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 text-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all pr-12"
                     placeholder="••••••••"
                     required
-                    minLength={8}
                   />
                   <button
                     type="button"
@@ -144,7 +182,6 @@ const Register: React.FC = () => {
                     className="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 text-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all pr-12"
                     placeholder="••••••••"
                     required
-                    minLength={8}
                   />
                   <button
                     type="button"
@@ -158,7 +195,9 @@ const Register: React.FC = () => {
             </div>
 
             <div className="flex justify-center">
-              <Button type="submit" variant="primary" className="px-8">Create Account</Button>
+              <Button type="submit" variant="primary" className="px-8" disabled={loading}>
+                {loading ? 'Creating Account...' : 'Create Account'}
+              </Button>
             </div>
           </form>
 

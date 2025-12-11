@@ -1,19 +1,46 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Button from '../components/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Dumbbell, Eye, EyeOff, Zap } from 'lucide-react';
 import Section from '../components/Section';
+import { login } from '../src/constant/authAPI';
+import { toast } from '../components/Toast';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login attempt', { email, password });
-    alert('Logged in successfully (Demo)');
+    setLoading(true);
+    
+    try {
+      const response = await login({ email, password });
+      
+      if (response.success) {
+        // Store user data in localStorage
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        
+        toast.success(response.message);
+        
+        // Redirect based on user role
+        setTimeout(() => {
+          if (response.data.user.role === 'admin') {
+            navigate('/admin/dashboard');
+          } else {
+            navigate('/');
+          }
+        }, 1500);
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -80,7 +107,9 @@ const Login: React.FC = () => {
             </div>
 
             <div className="flex justify-center">
-              <Button type="submit" variant="primary" className="px-8">Sign In</Button>
+              <Button type="submit" variant="primary" className="px-8" disabled={loading}>
+                {loading ? 'Signing In...' : 'Sign In'}
+              </Button>
             </div>
           </form>
 
