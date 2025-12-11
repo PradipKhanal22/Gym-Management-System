@@ -78,16 +78,19 @@ const AddProduct = () => {
       data.append('description', formData.description || '');
       data.append('price', formData.price);
       if (photo) {
+        console.log('Photo file details:', {
+          name: photo.name,
+          type: photo.type,
+          size: photo.size
+        });
         data.append('photo', photo);
       }
 
-      console.log('Sending product data:', {
-        category_id: formData.category_id,
-        name: formData.name,
-        description: formData.description,
-        price: formData.price,
-        has_photo: !!photo
-      });
+      // Debug: Log FormData contents
+      console.log('FormData entries:');
+      for (let pair of data.entries()) {
+        console.log(pair[0], pair[1]);
+      }
 
       const response = await productAPI.create(data);
       console.log('API Response:', response);
