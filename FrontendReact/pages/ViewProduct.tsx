@@ -67,9 +67,19 @@ const ViewProduct: React.FC = () => {
 
   const handleAddToCart = async () => {
     // Check if user is logged in
-    const user = localStorage.getItem('user');
-    if (!user) {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) {
       toast.error('Please login first to add items to cart');
+      navigate('/login');
+      return;
+    }
+
+    const user = JSON.parse(userStr);
+    
+    // Check if token exists
+    if (!user.token) {
+      toast.error('Session expired. Please login again to get authentication.');
+      localStorage.removeItem('user');
       navigate('/login');
       return;
     }
@@ -77,17 +87,22 @@ const ViewProduct: React.FC = () => {
     if (!product) return;
 
     // Add product with selected quantity
-    let success = true;
-    for (let i = 0; i < quantity; i++) {
-      success = await addToCart(product);
-      if (!success) break;
-    }
+    try {
+      let success = true;
+      for (let i = 0; i < quantity; i++) {
+        success = await addToCart(product);
+        if (!success) break;
+      }
 
-    if (success) {
-      toast.success(`${quantity} x ${product.name} added to cart!`);
-      setQuantity(1);
-    } else {
-      toast.error('Failed to add to cart. Please check stock availability.');
+      if (success) {
+        toast.success(`${quantity} x ${product.name} added to cart!`);
+        setQuantity(1);
+      } else {
+        toast.error('Failed to add to cart. Please check stock availability.');
+      }
+    } catch (error) {
+      console.error('Cart error:', error);
+      toast.error('Failed to add to cart. Please login again.');
     }
   };
 

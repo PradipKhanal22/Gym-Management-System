@@ -4,16 +4,40 @@ import { Menu, X, Dumbbell, ShoppingBag, User, LogOut, UserCircle } from 'lucide
 import Button from './Button';
 import { logout } from '../src/constant/authAPI';
 import { toast } from './Toast';
+import { getCart } from '../src/constant/cartUtils';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Load cart count
+  const loadCartCount = async () => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        if (userData.token) {
+          const cartItems = await getCart();
+          const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+          setCartCount(totalCount);
+        } else {
+          setCartCount(0);
+        }
+      } catch (error) {
+        console.error('Error loading cart count:', error);
+        setCartCount(0);
+      }
+    } else {
+      setCartCount(0);
+    }
+  };
 
   // Check for logged-in user on component mount
   useEffect(() => {
@@ -43,6 +67,8 @@ const Navbar: React.FC = () => {
         // Otherwise, reload from localStorage
         loadUser();
       }
+      // Reload cart count when user changes
+      loadCartCount();
     };
 
     window.addEventListener('userLoggedIn', handleUserChange);
@@ -53,6 +79,21 @@ const Navbar: React.FC = () => {
       window.removeEventListener('userLoggedIn', handleUserChange);
       window.removeEventListener('userLoggedOut', handleUserChange);
       window.removeEventListener('storage', loadUser);
+    };
+  }, []);
+
+  // Load cart count on mount and when cart is updated
+  useEffect(() => {
+    loadCartCount();
+
+    const handleCartUpdate = () => {
+      loadCartCount();
+    };
+
+    window.addEventListener('cartUpdated', handleCartUpdate);
+
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
     };
   }, []);
 
@@ -107,6 +148,7 @@ const Navbar: React.FC = () => {
       await logout();
       localStorage.removeItem('user');
       setUser(null);
+      setCartCount(0);
       setShowUserMenu(false);
       toast.success('Logged out successfully');
       
@@ -216,9 +258,11 @@ const Navbar: React.FC = () => {
 
                 <Link to="/cart" className="relative group">
                   <ShoppingBag className="w-6 h-6 text-slate-700 group-hover:text-primary transition-colors duration-300" />
-                  <span className="absolute -top-2 -right-2 flex items-center justify-center w-5 h-5 bg-primary text-white text-xs font-bold rounded-full animate-pulse">
-                    0
-                  </span>
+                  {cartCount > 0 && (
+                    <span className="absolute -top-2 -right-2 flex items-center justify-center w-5 h-5 bg-primary text-white text-xs font-bold rounded-full animate-pulse">
+                      {cartCount}
+                    </span>
+                  )}
                 </Link>
               </div>
             </div>
@@ -326,8 +370,15 @@ const Navbar: React.FC = () => {
             className="flex items-center justify-center gap-3 mt-6 text-slate-600 hover:text-primary transition-colors"
             onClick={() => setIsOpen(false)}
           >
-            <ShoppingBag className="w-7 h-7" />
-            <span className="text-lg font-bold">View Cart</span>
+            <div className="relative">
+              <ShoppingBag className="w-7 h-7" />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 flex items-center justify-center w-5 h-5 bg-primary text-white text-xs font-bold rounded-full">
+                  {cartCount}
+                </span>
+              )}
+            </div>
+            <span className="text-lg font-bold">View Cart ({cartCount})</span>
           </Link>
         </div>
 

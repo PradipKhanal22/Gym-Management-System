@@ -4,7 +4,7 @@ import Hero from '../components/Hero';
 import Section from '../components/Section';
 import Button from '../components/Button';
 import { Product } from '../types';
-import { ShoppingCart, Package, Zap } from 'lucide-react';
+import { ShoppingCart, Package, Zap, Eye } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { productAPI } from '../src/constant/api/productAPI';
 import { addToCart } from '../src/constant/cartUtils';
@@ -24,19 +24,34 @@ const Products: React.FC = () => {
     e.stopPropagation();
     
     // Check if user is logged in
-    const user = localStorage.getItem('user');
-    if (!user) {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) {
       toast.error('Please login first to add items to cart');
       navigate('/login');
       return;
     }
 
+    const user = JSON.parse(userStr);
+    
+    // Check if token exists
+    if (!user.token) {
+      toast.error('Session expired. Please login again to get authentication.');
+      localStorage.removeItem('user');
+      navigate('/login');
+      return;
+    }
+
     // Add to cart
-    const success = await addToCart(product);
-    if (success) {
-      toast.success(`${product.name} added to cart!`);
-    } else {
-      toast.error('Failed to add to cart. Please try again.');
+    try {
+      const success = await addToCart(product);
+      if (success) {
+        toast.success(`${product.name} added to cart!`);
+      } else {
+        toast.error('Failed to add to cart. Please try again.');
+      }
+    } catch (error) {
+      console.error('Cart error:', error);
+      toast.error('Failed to add to cart. Please login again.');
     }
   };
 
@@ -123,7 +138,8 @@ const Products: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.08 }}
                 viewport={{ once: true }}
-                className="group bg-white rounded-3xl overflow-hidden border border-slate-200 hover:border-primary transition-all hover:-translate-y-2 hover:shadow-2xl relative"
+                onClick={() => navigate(`/product/${product.id}`)}
+                className="group bg-white rounded-3xl overflow-hidden border border-slate-200 hover:border-primary transition-all hover:-translate-y-2 hover:shadow-2xl relative cursor-pointer"
               >
                 <div className="relative overflow-hidden aspect-square">
                   <img 
@@ -132,9 +148,9 @@ const Products: React.FC = () => {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                     <Link to={`/product/${product.id}`}>
-                       <Button variant="primary" className="scale-90 group-hover:scale-100 transition-transform bg-primary hover:bg-primary/90 shadow-lg">View Details</Button>
-                     </Link>
+                    <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-2 border-white/50">
+                      <Eye size={28} className="text-white" />
+                    </div>
                   </div>
                   {product.stock > 0 ? (
                     <div className="absolute top-4 left-4 bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
@@ -156,7 +172,7 @@ const Products: React.FC = () => {
                   </div>
                   <h3 className="text-xl font-black text-slate-900 mb-2 group-hover:text-primary transition-colors">{product.name}</h3>
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-200">
-                    <span className="text-2xl font-black text-slate-900">${parseFloat(product.price).toFixed(2)}</span>
+                    <span className="text-2xl font-black text-slate-900">Rs. {parseFloat(product.price).toFixed(2)}</span>
                     <button 
                       onClick={(e) => handleAddToCart(product, e)}
                       disabled={product.stock === 0}

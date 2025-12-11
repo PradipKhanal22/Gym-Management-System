@@ -22,15 +22,19 @@ const Login: React.FC = () => {
       const response = await login({ email, password });
       
       if (response.success) {
-        // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+        // Store user data with token in localStorage
+        const userData = {
+          ...response.data.user,
+          token: response.data.token
+        };
+        localStorage.setItem('user', JSON.stringify(userData));
         
         toast.success(response.message);
         
         // Dispatch custom event to notify Navbar and other components
         setTimeout(() => {
           window.dispatchEvent(new CustomEvent('userLoggedIn', { 
-            detail: response.data.user 
+            detail: userData 
           }));
         }, 0);
         

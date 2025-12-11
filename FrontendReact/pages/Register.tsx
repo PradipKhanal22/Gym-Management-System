@@ -52,11 +52,25 @@ const Register: React.FC = () => {
       console.log('Registration response:', response);
       
       if (response.success) {
-        toast.success('Registration successful! Redirecting to login...');
+        // Store user data with token in localStorage
+        const userData = {
+          ...response.data.user,
+          token: response.data.token
+        };
+        localStorage.setItem('user', JSON.stringify(userData));
+        
+        toast.success('Registration successful! Redirecting to home...');
+        
+        // Dispatch custom event to notify Navbar
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent('userLoggedIn', { 
+            detail: userData 
+          }));
+        }, 0);
         
         setTimeout(() => {
-          navigate('/login');
-        }, 2000);
+          navigate('/');
+        }, 1500);
       }
     } catch (error: any) {
       console.error('Registration error:', error);

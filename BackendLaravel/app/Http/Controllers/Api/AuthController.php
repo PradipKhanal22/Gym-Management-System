@@ -38,6 +38,9 @@ class AuthController extends Controller
             'role' => 'user', // Default role is user
         ]);
 
+        // Create token for newly registered user
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
             'success' => true,
             'message' => 'User registered successfully',
@@ -48,7 +51,8 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'phone' => $user->phone,
                     'role' => $user->role,
-                ]
+                ],
+                'token' => $token
             ]
         ], 201);
     }
@@ -73,16 +77,32 @@ class AuthController extends Controller
 
         // Check for admin credentials
         if ($request->email === 'admin@gmail.com' && $request->password === 'password') {
+            // For admin, we still need to create a token
+            // But admin is hardcoded, so we'll use a dummy user or create one
+            $adminUser = User::firstOrCreate(
+                ['email' => 'admin@gmail.com'],
+                [
+                    'name' => 'Admin',
+                    'email' => 'admin@gmail.com',
+                    'password' => Hash::make('password'),
+                    'phone' => '0000000000',
+                    'role' => 'admin'
+                ]
+            );
+
+            $token = $adminUser->createToken('auth_token')->plainTextToken;
+
             return response()->json([
                 'success' => true,
                 'message' => 'Admin login successful',
                 'data' => [
                     'user' => [
-                        'id' => 0,
+                        'id' => $adminUser->id,
                         'name' => 'Admin',
                         'email' => 'admin@gmail.com',
                         'role' => 'admin',
                     ],
+                    'token' => $token,
                     'redirect' => '/admin/dashboard'
                 ]
             ], 200);
@@ -98,6 +118,9 @@ class AuthController extends Controller
             ], 401);
         }
 
+        // Create token for authenticated user
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
@@ -109,6 +132,7 @@ class AuthController extends Controller
                     'phone' => $user->phone,
                     'role' => $user->role ?? 'user',
                 ],
+                'token' => $token,
                 'redirect' => '/'
             ]
         ], 200);
