@@ -239,66 +239,6 @@ const Cart: React.FC = () => {
           </div>
         </Section>
       )}
-
-      {/* Recommended Products */}
-      <Section className="bg-white py-16">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-block mb-4">
-              <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold uppercase tracking-wider">You May Also Like</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4">
-              Recommended <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Products</span>
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                name: 'Pre-Workout Energy',
-                price: 34.99,
-                image: 'https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=400&h=400&fit=crop'
-              },
-              {
-                name: 'Yoga Mat Pro',
-                price: 44.99,
-                image: 'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=400&h=400&fit=crop'
-              },
-              {
-                name: 'Shaker Bottle',
-                price: 14.99,
-                image: 'https://images.unsplash.com/photo-1625772452859-1c03d5bf1137?w=400&h=400&fit=crop'
-              }
-            ].map((product, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all border border-slate-200 group"
-              >
-                <div className="relative h-64 overflow-hidden">
-                  <img 
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-black text-slate-900 mb-3 group-hover:text-primary transition-colors">
-                    {product.name}
-                  </h3>
-                  <p className="text-2xl font-black text-primary mb-5">${product.price}</p>
-                  <Button className="w-full justify-center bg-gradient-to-r from-primary to-emerald-500 text-white hover:from-primary/90 hover:to-emerald-500/90 shadow-lg">
-                    Add to Cart
-                  </Button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </Section>
     </>
   );
 };
