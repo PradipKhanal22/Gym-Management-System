@@ -5,9 +5,11 @@ import Button from '../components/Button';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getCart, updateCartItemQuantity, removeFromCart, CartItem } from '../src/constant/cartUtils';
+import { toast } from '../components/Toast';
 
 const Cart: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [itemToDelete, setItemToDelete] = useState<number | null>(null);
 
   useEffect(() => {
     // Load cart from backend
@@ -32,9 +34,21 @@ const Cart: React.FC = () => {
     loadCart();
   };
 
-  const removeItem = async (id: number) => {
-    await removeFromCart(id);
-    loadCart();
+  const handleDeleteClick = (id: number) => {
+    setItemToDelete(id);
+  };
+
+  const confirmDelete = async () => {
+    if (itemToDelete) {
+      await removeFromCart(itemToDelete);
+      toast.success('Item removed from cart');
+      loadCart();
+      setItemToDelete(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setItemToDelete(null);
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + (parseFloat(item.product.price) * item.quantity), 0);
@@ -171,7 +185,7 @@ const Cart: React.FC = () => {
 
                     {/* Remove Button */}
                     <button
-                      onClick={() => removeItem(item.id)}
+                      onClick={() => handleDeleteClick(item.id)}
                       className="w-12 h-12 rounded-xl bg-red-50 hover:bg-red-500 text-red-500 hover:text-white transition-all flex items-center justify-center shadow-sm"
                     >
                       <Trash2 className="w-5 h-5" />
@@ -238,6 +252,42 @@ const Cart: React.FC = () => {
             </div>
           </div>
         </Section>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {itemToDelete !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl border-2 border-slate-200"
+          >
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+                <Trash2 className="w-8 h-8 text-red-500" />
+              </div>
+              <h3 className="text-2xl font-black text-slate-900 mb-2">Remove Item?</h3>
+              <p className="text-slate-600">
+                Are you sure you want to remove this item from your cart?
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={cancelDelete}
+                className="flex-1 px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="flex-1 px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold transition-all shadow-lg shadow-red-500/30"
+              >
+                Remove
+              </button>
+            </div>
+          </motion.div>
+        </div>
       )}
     </>
   );

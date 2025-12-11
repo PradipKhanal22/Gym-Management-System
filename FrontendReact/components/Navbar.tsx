@@ -282,65 +282,114 @@ const Navbar: React.FC = () => {
 
       {/* Right Side Sliding Menu */}
       <div
-        className={`fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-white shadow-2xl transform transition-transform duration-500 ease-out lg:hidden ${
+        className={`fixed inset-y-0 right-0 z-50 w-full max-w-md bg-gradient-to-br from-white via-slate-50 to-white shadow-2xl transform transition-transform duration-500 ease-out lg:hidden ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         ref={menuRef}
       >
         {/* Menu Header */}
-        <div className="flex items-center justify-between p-6 border-b-2 border-primary/20 bg-gradient-to-r from-primary to-primary/90">
-          <Link to="/" className="flex items-center gap-3" onClick={() => setIsOpen(false)}>
-            <Dumbbell className="w-10 h-10 text-white" />
-            <span className="text-2xl font-black text-white">
+        <div className="relative flex items-center justify-between p-6 border-b border-slate-200 bg-gradient-to-r from-primary via-primary to-emerald-500 overflow-hidden">
+          {/* Animated Background Elements */}
+          <div className="absolute inset-0">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-500/20 rounded-full blur-2xl animate-pulse delay-150"></div>
+          </div>
+          
+          <Link to="/" className="flex items-center gap-3 relative z-10" onClick={() => setIsOpen(false)}>
+            <div className="relative">
+              <img 
+                src="/logo.png" 
+                alt="NeonFit Logo" 
+                className="w-14 h-14 rounded-full object-cover border-2 border-white/50 shadow-lg" 
+              />
+              <div className="absolute inset-0 rounded-full bg-white/20 blur-md"></div>
+            </div>
+            <span className="text-2xl font-black text-white drop-shadow-lg">
               NEON<span className="text-white/90">FIT</span>
             </span>
           </Link>
           <button
             onClick={() => setIsOpen(false)}
-            className="p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
+            className="p-2.5 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all hover:rotate-90 duration-300 relative z-10 border border-white/30"
           >
             <X className="w-6 h-6 text-white" />
           </button>
         </div>
 
         {/* Menu Links */}
-        <div className="flex flex-col px-8 py-10 space-y-6">
+        <div className="flex flex-col px-6 py-6 space-y-2" style={{ maxHeight: 'calc(100vh - 350px)', overflowY: 'auto' }}>
           {navLinks.map((link, index) => (
             <Link
               key={link.name}
               to={link.path}
               onClick={() => setIsOpen(false)}
-              className={`text-3xl font-bold text-slate-700 hover:text-primary transition-all duration-300 hover:translate-x-4 border-l-4 border-transparent hover:border-primary pl-4 ${
-                location.pathname === link.path ? 'text-primary border-primary' : ''
+              className={`group relative flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 overflow-hidden ${
+                location.pathname === link.path 
+                  ? 'bg-gradient-to-r from-primary to-emerald-500 text-white shadow-lg shadow-primary/30 translate-x-1' 
+                  : 'bg-white hover:bg-slate-50 text-slate-700 hover:text-primary border border-slate-200 hover:border-primary/30 hover:translate-x-1 hover:shadow-md'
               }`}
-              style={{ animation: isOpen ? `slideIn 0.5s ease-out ${index * 0.1}s both` : 'none' }}
+              style={{ animation: isOpen ? `slideIn 0.4s ease-out ${index * 0.08}s both` : 'none' }}
             >
-              {link.name}
+              {/* Active Indicator */}
+              {location.pathname === link.path && (
+                <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-white rounded-r-full"></div>
+              )}
+              
+              <span className={`text-lg font-bold tracking-wide ${
+                location.pathname === link.path ? 'text-white' : 'group-hover:text-primary'
+              }`}>
+                {link.name}
+              </span>
+              
+              {/* Hover Arrow */}
+              <div className={`ml-auto transition-transform duration-300 ${
+                location.pathname === link.path ? 'translate-x-0 opacity-100' : 'translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'
+              }`}>
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                  location.pathname === link.path ? 'bg-white/20' : 'bg-primary/10'
+                }`}>
+                  <span className={`text-sm ${location.pathname === link.path ? 'text-white' : 'text-primary'}`}>→</span>
+                </div>
+              </div>
             </Link>
           ))}
         </div>
 
-        {/* Action Buttons */}
-        <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-slate-50 to-transparent border-t border-slate-200">
+        {/* Action Buttons - Fixed at Bottom */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-white via-white to-transparent border-t border-slate-200 backdrop-blur-sm">
           {user ? (
-            <div className="space-y-4">
-              <div className="p-4 bg-gradient-to-r from-primary to-emerald-500 rounded-xl text-white">
-                <div className="flex items-center gap-3 mb-3">
-                  <UserCircle className="w-10 h-10" />
-                  <div>
-                    <p className="font-bold">Hi, {user.name}</p>
-                    <p className="text-xs opacity-90 truncate">{user.email}</p>
-                  </div>
-                </div>
-              </div>
-
+            <div className="space-y-3">
               <Link
                 to="/my-details"
-                className="flex items-center gap-3 px-4 py-3 rounded-lg bg-white border-2 border-slate-200 hover:border-primary transition-colors"
+                className="flex items-center gap-3 px-5 py-3.5 rounded-xl bg-white border-2 border-slate-200 hover:border-primary hover:bg-slate-50 transition-all group shadow-sm"
                 onClick={() => setIsOpen(false)}
               >
-                <User className="w-5 h-5 text-slate-600" />
-                <span className="text-sm font-bold text-slate-700">My Details</span>
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <User className="w-5 h-5 text-primary" />
+                </div>
+                <span className="text-sm font-bold text-slate-700 group-hover:text-primary">My Profile</span>
+                <span className="ml-auto text-slate-400 group-hover:text-primary transition-colors">→</span>
+              </Link>
+
+              <Link
+                to="/cart"
+                className="flex items-center gap-3 px-5 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 transition-all group shadow-lg shadow-emerald-500/30"
+                onClick={() => setIsOpen(false)}
+              >
+                <div className="relative">
+                  <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <ShoppingBag className="w-5 h-5 text-white" />
+                  </div>
+                  {cartCount > 0 && (
+                    <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full border-2 border-emerald-500">
+                      {cartCount}
+                    </span>
+                  )}
+                </div>
+                <span className="text-sm font-bold text-white">Shopping Cart</span>
+                <span className="ml-auto px-2.5 py-1 bg-white/20 rounded-lg text-xs font-bold text-white border border-white/30">
+                  {cartCount} {cartCount === 1 ? 'item' : 'items'}
+                </span>
               </Link>
 
               <button
@@ -348,42 +397,49 @@ const Navbar: React.FC = () => {
                   setIsOpen(false);
                   handleLogout();
                 }}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-red-50 hover:bg-red-100 transition-colors"
+                className="w-full flex items-center gap-3 px-5 py-3.5 rounded-xl bg-red-50 hover:bg-red-100 border-2 border-red-100 hover:border-red-200 transition-all group"
               >
-                <LogOut className="w-5 h-5 text-red-600" />
+                <div className="w-10 h-10 rounded-xl bg-red-100 group-hover:bg-red-200 flex items-center justify-center transition-colors">
+                  <LogOut className="w-5 h-5 text-red-600" />
+                </div>
                 <span className="text-sm font-bold text-red-600">Logout</span>
               </button>
             </div>
           ) : (
-            <Link to="/login" className="block w-full" onClick={() => setIsOpen(false)}>
-              <Button
-                variant="primary"
-                className="w-full py-5 text-lg font-bold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
+            <div className="space-y-3">
+              <Link
+                to="/cart"
+                className="flex items-center gap-3 px-5 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 border-2 border-slate-200 hover:border-slate-300 transition-all group"
+                onClick={() => setIsOpen(false)}
               >
-                Login Now
-              </Button>
-            </Link>
-          )}
+                <div className="relative">
+                  <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
+                    <ShoppingBag className="w-5 h-5 text-slate-600 group-hover:text-primary transition-colors" />
+                  </div>
+                  {cartCount > 0 && (
+                    <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 bg-primary text-white text-xs font-bold rounded-full">
+                      {cartCount}
+                    </span>
+                  )}
+                </div>
+                <span className="text-sm font-bold text-slate-700 group-hover:text-primary">View Cart</span>
+                <span className="ml-auto text-xs font-bold text-slate-500">({cartCount})</span>
+              </Link>
 
-          <Link
-            to="/cart"
-            className="flex items-center justify-center gap-3 mt-6 text-slate-600 hover:text-primary transition-colors"
-            onClick={() => setIsOpen(false)}
-          >
-            <div className="relative">
-              <ShoppingBag className="w-7 h-7" />
-              {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 flex items-center justify-center w-5 h-5 bg-primary text-white text-xs font-bold rounded-full">
-                  {cartCount}
-                </span>
-              )}
+              <Link to="/login" className="block w-full" onClick={() => setIsOpen(false)}>
+                <Button
+                  variant="primary"
+                  className="w-full py-4 text-base font-bold bg-gradient-to-r from-primary to-emerald-500 hover:from-primary/90 hover:to-emerald-500/90 shadow-lg shadow-primary/30 border-none"
+                >
+                  Login / Sign Up
+                </Button>
+              </Link>
             </div>
-            <span className="text-lg font-bold">View Cart ({cartCount})</span>
-          </Link>
+          )}
         </div>
 
-        {/* Primary Color Accent */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary shadow-lg shadow-primary/50" />
+        {/* Bottom Accent Bar */}
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-emerald-500 to-primary"></div>
       </div>
 
       {/* Backdrop (click to close) */}
