@@ -256,7 +256,7 @@ const About: React.FC = () => {
                 {/* Card Container */}
                 <div className="relative overflow-hidden rounded-3xl bg-white shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2">
                   {/* Image Container */}
-                  <div className="relative h-[420px] overflow-hidden">
+                  <div className="relative h-64 overflow-hidden">
                     <img 
                       src={trainer.photo_path ? `http://localhost:8000/storage/${trainer.photo_path}` : 'https://images.unsplash.com/photo-1567598508481-65985588e295?w=400&h=500&fit=crop'} 
                       alt={trainer.name} 
@@ -270,13 +270,13 @@ const About: React.FC = () => {
                   </div>
 
                   {/* Content Section */}
-                  <div className="p-8 bg-white">
-                    <h3 className="text-2xl font-black text-slate-900 mb-3 group-hover:text-primary transition-colors duration-300">{trainer.name}</h3>
-                    <p className="text-primary font-bold text-xs uppercase tracking-widest mb-4 flex items-center gap-2">
-                      <span className="w-10 h-0.5 bg-primary"></span>
+                  <div className="p-6 bg-white">
+                    <h3 className="text-xl font-black text-slate-900 mb-2 group-hover:text-primary transition-colors duration-300">{trainer.name}</h3>
+                    <p className="text-primary font-bold text-xs uppercase tracking-widest mb-3 flex items-center gap-2">
+                      <span className="w-8 h-0.5 bg-primary"></span>
                       {trainer.specialty}
                     </p>
-                    <p className="text-slate-600 text-sm font-medium mb-5 leading-relaxed">{trainer.description}</p>
+                    <p className="text-slate-600 text-sm font-medium leading-relaxed line-clamp-3">{trainer.description}</p>
                     
                     
                   </div>
