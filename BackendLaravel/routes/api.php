@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\TrainerController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\ContactMessageController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -37,5 +38,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/cart/{id}', [CartController::class, 'update']);
     Route::delete('/cart/{id}', [CartController::class, 'destroy']);
     Route::delete('/cart-clear', [CartController::class, 'clear']);
+
+    // Contact Messages Routes
+    Route::post('/contact-messages', [ContactMessageController::class, 'store']);
+});
+
+// Admin Contact Messages Routes (Protected)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/contact-messages', [ContactMessageController::class, 'index']);
+    Route::get('/contact-messages/{id}', [ContactMessageController::class, 'show']);
+    Route::put('/contact-messages/{id}/read', [ContactMessageController::class, 'markAsRead']);
+    Route::delete('/contact-messages/{id}', [ContactMessageController::class, 'destroy']);
 });
 
