@@ -4,14 +4,66 @@ import Hero from '../components/Hero';
 import Section from '../components/Section';
 import Button from '../components/Button';
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle2 } from 'lucide-react';
+import { contactAPI } from '../src/constant/api/contactAPI';
+import { toast } from '../components/Toast';
+import { useNavigate } from 'react-router-dom';
 
 const Contact: React.FC = () => {
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({ name: '', email: '', message: '' });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Message sent! Thanks ${formState.name}.`);
-    setFormState({ name: '', email: '', message: '' });
+    
+    // Check if user is logged in
+    const userStr = localStorage.getItem('user');
+    if (!userStr) {
+      toast.error('Please login first to send a message');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const userData = JSON.parse(userStr);
+      if (!userData.token) {
+        toast.error('Session expired. Please login again.');
+        localStorage.removeItem('user');
+        navigate('/login');
+        return;
+      }
+    } catch (error) {
+      toast.error('Invalid session. Please login again.');
+      navigate('/login');
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      const response = await contactAPI.sendMessage({
+        name: formState.name,
+        email: formState.email,
+        message: formState.message
+      });
+
+      if (response.success) {
+        toast.success(response.message || 'Message sent successfully!');
+        setFormState({ name: '', email: '', message: '' });
+      } else {
+        toast.error(response.message || 'Failed to send message');
+      }
+    } catch (error: any) {
+      console.error('Contact form error:', error);
+      if (error.message === 'Failed to send message') {
+        toast.error('Please login to send a message');
+        navigate('/login');
+      } else {
+        toast.error(error.message || 'Failed to send message. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -165,8 +217,8 @@ const Contact: React.FC = () => {
                   onChange={(e) => setFormState({...formState, message: e.target.value})}
                 ></textarea>
               </div>
-              <Button type="submit" variant="primary" className="w-full justify-center gap-2 bg-gradient-to-r from-primary to-emerald-500 hover:from-primary/90 hover:to-emerald-500/90 text-white shadow-lg shadow-primary/20">
-                Send Message <Send size={18} />
+              <Button type="submit" variant="primary" disabled={loading} className="w-full justify-center gap-2 bg-gradient-to-r from-primary to-emerald-500 hover:from-primary/90 hover:to-emerald-500/90 text-white shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed">
+                {loading ? 'Sending...' : 'Send Message'} <Send size={18} />
               </Button>
               <div className="flex items-center justify-center gap-2 text-slate-500 text-sm font-semibold">
                 <CheckCircle2 size={16} className="text-primary" />

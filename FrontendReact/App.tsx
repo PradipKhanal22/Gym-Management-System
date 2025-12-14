@@ -28,6 +28,7 @@ import EditTrainer from './pages/admin/trainers/EditTrainer';
 import ProductList from './pages/admin/products/ProductList';
 import AddProduct from './pages/admin/products/AddProduct';
 import EditProduct from './pages/admin/products/EditProduct';
+import MessageList from './pages/admin/contact-messages/MessageList';
 
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
@@ -90,6 +91,7 @@ const App: React.FC = () => {
           <Route path="/admin/products" element={<ProductList />} />
           <Route path="/admin/products/add" element={<AddProduct />} />
           <Route path="/admin/products/edit/:id" element={<EditProduct />} />
+          <Route path="/admin/contact-messages" element={<MessageList />} />
         </Routes>
       </main>
       {!isAdminRoute && <Footer />}

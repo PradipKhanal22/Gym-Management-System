@@ -25,7 +25,7 @@ const Sidebar: React.FC = () => {
     { path: '/admin/trainers', icon: Users, label: 'Trainers' },
     { path: '/admin/membership', icon: CreditCard, label: 'Membership' },
     { path: '/admin/orders', icon: Package, label: 'Orders' },
-    { path: '/admin/contact-message', icon: MessageSquare, label: 'Contact Message' }
+    { path: '/admin/contact-messages', icon: MessageSquare, label: 'Contact Messages' }
   ];
 
   // Close mobile menu on route change

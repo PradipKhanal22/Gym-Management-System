@@ -155,7 +155,7 @@ const Cart: React.FC = () => {
                         {item.product.name}
                       </h3>
                       <p className="text-2xl font-black text-primary mb-4">
-                        ${parseFloat(item.product.price).toFixed(2)}
+                        Rs. {parseFloat(item.product.price).toFixed(2)}
                       </p>
 
                       {/* Quantity Controls */}
@@ -209,17 +209,17 @@ const Cart: React.FC = () => {
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between text-slate-600 font-semibold">
                     <span>Subtotal</span>
-                    <span className="text-slate-900">${subtotal.toFixed(2)}</span>
+                    <span className="text-slate-900">Rs. {subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-slate-600 font-semibold">
                     <span>Shipping</span>
                     <span className="text-slate-900">
-                      {shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}
+                      {shipping === 0 ? 'FREE' : `Rs. ${shipping.toFixed(2)}`}
                     </span>
                   </div>
                   {subtotal < 100 && (
                     <p className="text-xs text-slate-500 italic">
-                      Add ${(100 - subtotal).toFixed(2)} more for free shipping!
+                      Add Rs. {(100 - subtotal).toFixed(2)} more for free shipping!
                     </p>
                   )}
                 </div>
@@ -228,7 +228,7 @@ const Cart: React.FC = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-xl font-black text-slate-900">Total</span>
                     <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">
-                      ${total.toFixed(2)}
+                      Rs. {total.toFixed(2)}
                     </span>
                   </div>
                 </div>
