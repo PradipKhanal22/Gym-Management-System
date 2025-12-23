@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Mail\WelcomeUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -37,6 +40,15 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'role' => 'user', // Default role is user
         ]);
+
+        // Send welcome email
+        try {
+            Mail::to($user->email)->send(new WelcomeUser($user));
+            Log::info("Welcome email sent successfully to {$user->email}");
+        } catch (\Exception $e) {
+            // Log error but don't fail the registration
+            Log::error("Failed to send welcome email: " . $e->getMessage());
+        }
 
         // Create token for newly registered user
         $token = $user->createToken('auth_token')->plainTextToken;

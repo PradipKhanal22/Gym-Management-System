@@ -23,12 +23,31 @@ const Checkout: React.FC = () => {
 
   useEffect(() => {
     loadCart();
+    loadUserData();
   }, []);
 
   const loadCart = async () => {
     const cart = await getCart();
     setCartItems(cart);
     setLoading(false);
+  };
+
+  const loadUserData = () => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        setFormData({
+          firstName: userData.name || '',
+          lastName: '',
+          email: userData.email || '',
+          phone: userData.phone || '',
+          address: ''
+        });
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
+    }
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + (parseFloat(item.product.price.toString()) * item.quantity), 0);
