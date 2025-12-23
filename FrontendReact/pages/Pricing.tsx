@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Hero from '../components/Hero';
 import Section from '../components/Section';
@@ -11,20 +11,20 @@ const plans: PricingPlan[] = [
   {
     id: 1,
     name: "Day Pass",
-    price: "$15",
+    price: "Rs. 150",
     features: ["Single day access", "Locker room access", "Free WiFi"],
   },
   {
     id: 2,
     name: "Pro Member",
-    price: "$49",
+    price: "Rs. 5500",
     features: ["24/7 Gym Access", "Group Classes Included", "1 Guest Pass/Month", "Free Fitness Assessment"],
     recommended: true
   },
   {
     id: 3,
     name: "Elite",
-    price: "$89",
+    price: "Rs. 8900",
     features: ["All Pro Benefits", "Unlimited Sauna/Recovery", "Personal Training (1x/mo)", "Nutrition Plan", "Priority Support"],
   }
 ];
@@ -45,6 +45,24 @@ const Pricing: React.FC = () => {
     address: '',
     city: ''
   });
+
+  useEffect(() => {
+    // Load user data from localStorage
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        setFormData(prev => ({
+          ...prev,
+          fullName: userData.name || '',
+          email: userData.email || '',
+          phone: userData.phone || ''
+        }));
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -183,24 +201,9 @@ const Pricing: React.FC = () => {
                         value={formData.address}
                         onChange={handleChange}
                         className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-3 pl-10 text-slate-800 focus:outline-none focus:border-primary focus:bg-white transition-all font-medium"
-                        placeholder="Street Address"
+                        placeholder="Address"
                       />
                     </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-black text-slate-700 mb-2 uppercase tracking-wider">
-                      City
-                    </label>
-                    <input
-                      type="text"
-                      name="city"
-                      required
-                      value={formData.city}
-                      onChange={handleChange}
-                      className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-3 text-slate-800 focus:outline-none focus:border-primary focus:bg-white transition-all font-medium"
-                      placeholder="Kathmandu"
-                    />
                   </div>
 
                   {/* Payment Method */}
