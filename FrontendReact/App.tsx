@@ -14,6 +14,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import ThankYou from './pages/ThankYou';
 import MyDetails from './pages/MyDetails';
 import OrderHistory from './pages/OrderHistory';
 import AdminDashboard from './pages/admin/Dashboard';
@@ -77,6 +78,7 @@ const App: React.FC = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/thank-you" element={<ThankYou />} />
           <Route path="/my-details" element={<MyDetails />} />
           <Route path="/order-history" element={<OrderHistory />} />
           

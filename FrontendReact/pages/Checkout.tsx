@@ -86,7 +86,6 @@ const Checkout: React.FC = () => {
       const response = await orderAPI.create(orderData);
 
       if (response.success) {
-        toast.success('Order placed successfully! Thank you for your purchase.');
         // Clear form
         setFormData({
           firstName: '',
@@ -95,10 +94,14 @@ const Checkout: React.FC = () => {
           phone: '',
           address: ''
         });
-        // Redirect to orders page or home after a delay
-        setTimeout(() => {
-          navigate('/');
-        }, 2000);
+        // Redirect to thank you page with success state
+        navigate('/thank-you', {
+          state: {
+            success: true,
+            message: 'Order placed successfully! Thank you for your purchase.',
+            orderId: response.data?.id
+          }
+        });
       } else {
         toast.error(response.message || 'Failed to place order. Please try again.');
       }
