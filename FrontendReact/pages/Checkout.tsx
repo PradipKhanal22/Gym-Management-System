@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Section from '../components/Section';
 import { CreditCard, Lock, User, Mail, Phone, MapPin, ShoppingBag, CheckCircle2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { getCart, CartItem } from '../src/constant/cartUtils';
+import { orderAPI } from '../src/constant/api/orderAPI';
+import { toast } from '../components/Toast';
 
 const Checkout: React.FC = () => {
+  const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState<'COD' | 'Esewa'>('COD');
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -14,35 +21,73 @@ const Checkout: React.FC = () => {
     address: ''
   });
 
-  const orderItems = [
-    {
-      id: 1,
-      name: 'Premium Whey Protein',
-      price: 49.99,
-      quantity: 2,
-      image: 'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=200&h=200&fit=crop'
-    },
-    {
-      id: 2,
-      name: 'Resistance Bands Set',
-      price: 29.99,
-      quantity: 1,
-      image: 'https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=200&h=200&fit=crop'
-    }
-  ];
+  useEffect(() => {
+    loadCart();
+  }, []);
 
-  const subtotal = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const loadCart = async () => {
+    const cart = await getCart();
+    setCartItems(cart);
+    setLoading(false);
+  };
+
+  const subtotal = cartItems.reduce((sum, item) => sum + (parseFloat(item.product.price.toString()) * item.quantity), 0);
   const shipping = subtotal > 100 ? 0 : 9.99;
-  const tax = subtotal * 0.08;
-  const total = subtotal + shipping + tax;
+  const total = subtotal + shipping;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (cartItems.length === 0) {
+      toast.error('Your cart is empty');
+      return;
+    }
+
     if (paymentMethod === 'Esewa') {
-      alert('Redirecting to Esewa payment gateway...');
-      // Here you would integrate with Esewa payment API
-    } else {
-      alert('Order placed successfully with Cash on Delivery!');
+      toast.error('Esewa payment integration coming soon!');
+      return;
+    }
+
+    // Handle Cash on Delivery
+    setSubmitting(true);
+    try {
+      const orderData = {
+        full_name: formData.firstName,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        payment_method: paymentMethod,
+        subtotal: subtotal,
+        shipping: shipping,
+        tax: 0,
+        total: total,
+        notes: ''
+      };
+
+      const response = await orderAPI.create(orderData);
+
+      if (response.success) {
+        toast.success('Order placed successfully! Thank you for your purchase.');
+        // Clear form
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          address: ''
+        });
+        // Redirect to orders page or home after a delay
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
+      } else {
+        toast.error(response.message || 'Failed to place order. Please try again.');
+      }
+    } catch (error) {
+      console.error('Order error:', error);
+      toast.error('An error occurred while placing your order. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -95,8 +140,35 @@ const Checkout: React.FC = () => {
         </div>
       </div>
 
-      <Section className="bg-gradient-to-b from-slate-50 to-white py-16">
-        <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+      {loading ? (
+        <Section className="bg-gradient-to-b from-slate-50 to-white py-16">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
+            <p className="mt-4 text-slate-600 font-semibold">Loading checkout...</p>
+          </div>
+        </Section>
+      ) : cartItems.length === 0 ? (
+        <Section className="bg-gradient-to-b from-slate-50 to-white py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center max-w-2xl mx-auto"
+          >
+            <div className="w-32 h-32 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-8">
+              <ShoppingBag className="w-16 h-16 text-slate-400" />
+            </div>
+            <h2 className="text-4xl font-black text-slate-900 mb-4">Your Cart is Empty</h2>
+            <p className="text-slate-600 text-lg mb-8">Add some products to your cart before checking out!</p>
+            <Link to="/products">
+              <button className="bg-gradient-to-r from-primary to-emerald-500 text-white px-8 py-3 rounded-xl font-black hover:shadow-xl transition-all">
+                Shop Now
+              </button>
+            </Link>
+          </motion.div>
+        </Section>
+      ) : (
+        <Section className="bg-gradient-to-b from-slate-50 to-white py-16">
+          <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {/* Checkout Form */}
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="space-y-8">
@@ -253,9 +325,17 @@ const Checkout: React.FC = () => {
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className="bg-gradient-to-r from-primary to-emerald-500 text-white px-12 py-4 rounded-xl font-black text-lg hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 flex items-center justify-center gap-2 w-full max-w-md"
+                  disabled={submitting}
+                  className={`bg-gradient-to-r from-primary to-emerald-500 text-white px-12 py-4 rounded-xl font-black text-lg hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 flex items-center justify-center gap-2 w-full max-w-md ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  Submit Order
+                  {submitting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                      Processing...
+                    </>
+                  ) : (
+                    'Submit Order'
+                  )}
                 </button>
               </div>
             </form>
@@ -277,12 +357,12 @@ const Checkout: React.FC = () => {
 
               {/* Order Items */}
               <div className="space-y-4 mb-6 pb-6 border-b-2 border-slate-200">
-                {orderItems.map((item) => (
+                {cartItems.map((item) => (
                   <div key={item.id} className="flex gap-4">
                     <div className="relative w-20 h-20 rounded-xl overflow-hidden shadow-md shrink-0">
                       <img 
-                        src={item.image} 
-                        alt={item.name}
+                        src={item.product.photo_path ? `http://localhost:8000/storage/${item.product.photo_path}` : 'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=200&h=200&fit=crop'}
+                        alt={item.product.name}
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute top-1 right-1 w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs font-black">
@@ -290,8 +370,8 @@ const Checkout: React.FC = () => {
                       </div>
                     </div>
                     <div className="flex-grow">
-                      <h4 className="font-black text-slate-900 text-sm mb-1">{item.name}</h4>
-                      <p className="text-primary font-black">${(item.price * item.quantity).toFixed(2)}</p>
+                      <h4 className="font-black text-slate-900 text-sm mb-1">{item.product.name}</h4>
+                      <p className="text-primary font-black">Rs. {(parseFloat(item.product.price.toString()) * item.quantity).toFixed(2)}</p>
                     </div>
                   </div>
                 ))}
@@ -301,7 +381,7 @@ const Checkout: React.FC = () => {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-slate-600 font-semibold">
                   <span>Subtotal</span>
-                  <span className="text-slate-900">${subtotal.toFixed(2)}</span>
+                  <span className="text-slate-900">Rs. {subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-slate-600 font-semibold">
                   <span>Shipping</span>
@@ -309,17 +389,13 @@ const Checkout: React.FC = () => {
                     {shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}
                   </span>
                 </div>
-                <div className="flex justify-between text-slate-600 font-semibold">
-                  <span>Tax (8%)</span>
-                  <span className="text-slate-900">${tax.toFixed(2)}</span>
-                </div>
               </div>
 
               <div className="border-t-2 border-slate-200 pt-4 mb-6">
                 <div className="flex justify-between items-center">
                   <span className="text-xl font-black text-slate-900">Total</span>
                   <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">
-                    ${total.toFixed(2)}
+                    Rs. {total.toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -342,7 +418,8 @@ const Checkout: React.FC = () => {
             </motion.div>
           </div>
         </div>
-      </Section>
+        </Section>
+      )}
     </>
   );
 };

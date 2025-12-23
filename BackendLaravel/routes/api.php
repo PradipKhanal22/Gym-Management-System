@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\ContactMessageController;
+use App\Http\Controllers\Api\OrderController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -38,6 +39,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/cart/{id}', [CartController::class, 'update']);
     Route::delete('/cart/{id}', [CartController::class, 'destroy']);
     Route::delete('/cart-clear', [CartController::class, 'clear']);
+
+    // Order API Routes
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel']);
+
+    // Admin Order Routes
+    Route::get('/admin/orders', [OrderController::class, 'getAllOrders']);
+    Route::put('/admin/orders/{id}/status', [OrderController::class, 'updateStatus']);
 
     // Contact Messages Routes
     Route::post('/contact-messages', [ContactMessageController::class, 'store']);

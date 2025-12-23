@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Section from '../components/Section';
 import Button from '../components/Button';
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Package } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getCart, updateCartItemQuantity, removeFromCart, CartItem } from '../src/constant/cartUtils';
 import { toast } from '../components/Toast';
@@ -96,6 +96,22 @@ const Cart: React.FC = () => {
           </motion.p>
         </div>
       </div>
+
+      {/* My Order History Button */}
+      <Section className="bg-gradient-to-b from-slate-50 to-white py-8">
+        <div className="text-center">
+          <Link to="/order-history">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl font-black text-lg shadow-lg hover:shadow-xl transition-all"
+            >
+              <Package className="w-6 h-6" />
+              My Order History
+            </motion.button>
+          </Link>
+        </div>
+      </Section>
 
       {cartItems.length === 0 ? (
         /* Empty Cart */

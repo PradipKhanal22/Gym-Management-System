@@ -15,6 +15,7 @@ import Register from './pages/Register';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import MyDetails from './pages/MyDetails';
+import OrderHistory from './pages/OrderHistory';
 import AdminDashboard from './pages/admin/Dashboard';
 import ServiceList from './pages/admin/services/ServiceList';
 import AddService from './pages/admin/services/AddService';
@@ -29,6 +30,7 @@ import ProductList from './pages/admin/products/ProductList';
 import AddProduct from './pages/admin/products/AddProduct';
 import EditProduct from './pages/admin/products/EditProduct';
 import MessageList from './pages/admin/contact-messages/MessageList';
+import Order from './pages/admin/orders/Order';
 
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
@@ -76,6 +78,7 @@ const App: React.FC = () => {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/my-details" element={<MyDetails />} />
+          <Route path="/order-history" element={<OrderHistory />} />
           
           {/* Admin Routes */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
@@ -91,6 +94,7 @@ const App: React.FC = () => {
           <Route path="/admin/products" element={<ProductList />} />
           <Route path="/admin/products/add" element={<AddProduct />} />
           <Route path="/admin/products/edit/:id" element={<EditProduct />} />
+          <Route path="/admin/orders" element={<Order />} />
           <Route path="/admin/contact-messages" element={<MessageList />} />
         </Routes>
       </main>
