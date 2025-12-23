@@ -7,9 +7,13 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Cart;
 use App\Models\Product;
+use App\Mail\OrderConfirmation;
+use App\Mail\OrderStatusUpdate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -152,6 +156,15 @@ class OrderController extends Controller
             // Load order with items
             $order->load('orderItems.product');
 
+            // Send order confirmation email
+            try {
+                Mail::to($order->email)->send(new OrderConfirmation($order));
+                Log::info("Order confirmation email sent successfully to {$order->email} for order #{$order->id}");
+            } catch (\Exception $e) {
+                // Log error but don't fail the order
+                Log::error("Failed to send order confirmation email: " . $e->getMessage());
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Order placed successfully',
@@ -221,7 +234,7 @@ class OrderController extends Controller
             ], 422);
         }
 
-        $order = Order::find($id);
+        $order = Order::with('orderItems.product')->find($id);
 
         if (!$order) {
             return response()->json([
@@ -237,6 +250,15 @@ class OrderController extends Controller
         }
 
         $order->save();
+
+        // Send order status update email
+        try {
+            Mail::to($order->email)->send(new OrderStatusUpdate($order));
+            Log::info("Order status update email sent successfully to {$order->email} for order #{$order->id}");
+        } catch (\Exception $e) {
+            // Log error but don't fail the status update
+            Log::error("Failed to send order status update email: " . $e->getMessage());
+        }
 
         return response()->json([
             'success' => true,
