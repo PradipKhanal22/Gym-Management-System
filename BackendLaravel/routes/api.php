@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\ContactMessageController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\EsewaController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -45,6 +46,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/orders', [OrderController::class, 'store']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel']);
+
+
+
+    Route::post('/esewa/pay', [EsewaController::class, 'pay']);
+    Route::get('/esewa/success', [EsewaController::class, 'success']);
+    Route::get('/esewa/failure', [EsewaController::class, 'failure']);
+
 
     // Admin Order Routes
     Route::get('/admin/orders', [OrderController::class, 'getAllOrders']);

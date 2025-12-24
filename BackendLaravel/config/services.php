@@ -33,6 +33,13 @@ return [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
+
+        'esewa' => [
+    'url' => env('ESEWA_URL'),
+    'verify_url' => env('ESEWA_VERIFY_URL'),
+    'merchant' => env('ESEWA_MERCHANT_CODE'),
+],
+
     ],
 
 ];
