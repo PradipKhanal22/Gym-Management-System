@@ -23,7 +23,7 @@ const plans: PricingPlan[] = [
   {
     id: 1,
     name: "Day Pass",
-    price: "Rs. 150",
+    price: "Rs. 500",
     features: ["Single day access", "Locker room access", "Free WiFi"],
   },
   {
