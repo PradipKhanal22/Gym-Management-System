@@ -10,6 +10,7 @@ import Pricing from './pages/Pricing';
 import Products from './pages/Products';
 import ViewProduct from './pages/ViewProduct';
 import Contact from './pages/Contact';
+import FAQ from './pages/FAQ';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Cart from './pages/Cart';
@@ -74,6 +75,7 @@ const App: React.FC = () => {
           <Route path="/products" element={<Products />} />
           <Route path="/product/:id" element={<ViewProduct />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/cart" element={<Cart />} />

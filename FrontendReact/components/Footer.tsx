@@ -100,12 +100,20 @@ const Footer: React.FC = () => {
               <span className="absolute -bottom-2 left-0 w-16 h-1 bg-primary rounded-full" />
             </h3>
             <ul className="space-y-5">
-              {['Contact Us', 'FAQ', 'Privacy Policy', 'Terms of Service'].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-slate-300 hover:text-primary font-medium transition-all duration-300 hover:translate-x-3 flex items-center group text-lg">
+              {[
+                { name: 'Contact Us', path: '/contact' },
+                { name: 'FAQ', path: '/faq' },
+                { name: 'Privacy Policy', path: '#' },
+                { name: 'Terms of Service', path: '#' }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link
+                    to={item.path}
+                    className="text-slate-300 hover:text-primary font-medium transition-all duration-300 hover:translate-x-3 flex items-center group text-lg"
+                  >
                     <span className="mr-3 text-primary opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-                    {item}
-                  </a>
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ul>
