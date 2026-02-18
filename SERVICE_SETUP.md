@@ -37,6 +37,7 @@
 ```bash
 cd BackendLaravel
 
+
 # Make sure migrations are run
 php artisan migrate
 

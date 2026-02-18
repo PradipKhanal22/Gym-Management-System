@@ -33,6 +33,15 @@ Route::apiResource('trainers', TrainerController::class);
 // Product API Routes
 Route::apiResource('products', ProductController::class);
 
+
+// Public routes - no authentication required
+Route::post('/esewa/pay', [EsewaController::class, 'pay']);
+Route::get('/esewa/success', [EsewaController::class, 'success'])->name('esewa.success');
+Route::get('/esewa/failure', [EsewaController::class, 'failure'])->name('esewa.failure');
+
+// Direct eSewa payment test
+Route::get('/esewa/direct-pay', [EsewaController::class, 'directPay']);
+
 // Cart API Routes (Protected - requires authentication)
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/cart', [CartController::class, 'index']);
@@ -47,11 +56,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders/{id}', [OrderController::class, 'show']);
     Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel']);
 
-
-
-    Route::post('/esewa/pay', [EsewaController::class, 'pay']);
-    Route::get('/esewa/success', [EsewaController::class, 'success']);
-    Route::get('/esewa/failure', [EsewaController::class, 'failure']);
 
 
     // Admin Order Routes
@@ -69,4 +73,3 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/contact-messages/{id}/read', [ContactMessageController::class, 'markAsRead']);
     Route::delete('/contact-messages/{id}', [ContactMessageController::class, 'destroy']);
 });
-

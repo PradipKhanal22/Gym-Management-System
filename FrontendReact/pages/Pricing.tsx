@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Hero from "../components/Hero";
 import Section from "../components/Section";
 import {
   Check,
   Plus,
-  Minus,
-  Star,
   ArrowRight,
   X,
-  CreditCard,
   User,
   Mail,
   Phone,
@@ -73,16 +69,15 @@ const faqs = [
 
 const Pricing: React.FC = () => {
   const [selectedPlan, setSelectedPlan] = useState<PricingPlan | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: "",
     address: "",
-    city: "",
   });
 
   useEffect(() => {
-    // Load user data from localStorage
     const userStr = localStorage.getItem("user");
     if (userStr) {
       try {
@@ -114,13 +109,18 @@ const Pricing: React.FC = () => {
       return;
     }
 
+    setIsProcessing(true);
+
     try {
+      // Remove "Rs. " from price
       const amount = selectedPlan.price.replace("Rs. ", "");
 
+      // Call your Laravel backend to get eSewa form data
       const response = await fetch("http://localhost:8000/api/esewa/pay", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify({
           full_name: formData.fullName,
@@ -132,17 +132,19 @@ const Pricing: React.FC = () => {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to initiate payment");
-      }
-
       const data = await response.json();
 
-      // 🔥 Redirect user to eSewa
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to initiate payment");
+      }
+
+      // ✅ Create a browser form to submit to eSewa
       const esewaForm = document.createElement("form");
       esewaForm.method = "POST";
-      esewaForm.action = data.url;
+      esewaForm.action = data.url; // eSewa endpoint
+      esewaForm.acceptCharset = "UTF-8";
 
+      // Add all required params as hidden inputs
       Object.entries(data.params).forEach(([key, value]) => {
         const input = document.createElement("input");
         input.type = "hidden";
@@ -151,23 +153,25 @@ const Pricing: React.FC = () => {
         esewaForm.appendChild(input);
       });
 
+      // Append to body and submit
       document.body.appendChild(esewaForm);
       esewaForm.submit();
-
     } catch (error) {
-      console.error(error);
-      alert("Something went wrong. Please try again.");
+      console.error("Payment error details:", error);
+      alert(
+        "Error initiating payment: " +
+          (error instanceof Error ? error.message : "Unknown error"),
+      );
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-
   return (
     <>
-      {/* Sliding Form */}
       <AnimatePresence>
         {selectedPlan && (
           <>
-            {/* Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -176,7 +180,6 @@ const Pricing: React.FC = () => {
               className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40"
             />
 
-            {/* Form Panel */}
             <motion.div
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
@@ -185,7 +188,6 @@ const Pricing: React.FC = () => {
               className="fixed left-0 top-0 h-full w-full md:w-[500px] bg-white shadow-2xl z-50 overflow-y-auto"
             >
               <div className="p-8">
-                {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                   <div>
                     <h2 className="text-3xl font-black text-slate-900 mb-2">
@@ -203,7 +205,6 @@ const Pricing: React.FC = () => {
                   </button>
                 </div>
 
-                {/* Selected Plan Features */}
                 <div className="bg-slate-50 rounded-2xl p-6 mb-8">
                   <h3 className="text-sm font-black text-slate-700 uppercase tracking-wider mb-4">
                     Plan Includes
@@ -220,7 +221,6 @@ const Pricing: React.FC = () => {
                   </ul>
                 </div>
 
-                {/* Registration Form */}
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div>
                     <label className="block text-xs font-black text-slate-700 mb-2 uppercase tracking-wider">
@@ -294,7 +294,6 @@ const Pricing: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Payment Method */}
                   <div className="pt-6 border-t-2 border-slate-200">
                     <h3 className="text-sm font-black text-slate-700 uppercase tracking-wider mb-4">
                       Payment Method
@@ -317,14 +316,14 @@ const Pricing: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Submit Button */}
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full justify-center bg-gradient-to-r from-primary to-emerald-500 text-white hover:from-primary/90 hover:to-emerald-500/90 shadow-xl text-base font-black py-4 mt-6"
+                    disabled={isProcessing}
+                    className="w-full justify-center bg-gradient-to-r from-primary to-emerald-500 text-white hover:from-primary/90 hover:to-emerald-500/90 shadow-xl text-base font-black py-4 mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Proceed to Esewa
-                    <ArrowRight className="ml-2 w-5 h-5" />
+                    {isProcessing ? "Processing..." : "Proceed to Esewa"}
+                    {!isProcessing && <ArrowRight className="ml-2 w-5 h-5" />}
                   </Button>
                 </form>
               </div>
@@ -332,7 +331,7 @@ const Pricing: React.FC = () => {
           </>
         )}
       </AnimatePresence>
-      {/* Hero Section */}
+
       <div className="relative h-[60vh] mt-20 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img
@@ -364,7 +363,6 @@ const Pricing: React.FC = () => {
         </div>
       </div>
 
-      {/* Pricing Plans */}
       <Section className="bg-white py-16">
         <div className="text-center mb-12 max-w-7xl mx-auto">
           <motion.div
@@ -398,10 +396,11 @@ const Pricing: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
               viewport={{ once: true }}
-              className={`relative p-8 rounded-3xl border flex flex-col ${plan.recommended
+              className={`relative p-8 rounded-3xl border flex flex-col ${
+                plan.recommended
                   ? "bg-gradient-to-br from-primary to-emerald-500 border-primary shadow-2xl scale-105 z-10"
                   : "bg-white border-slate-200 hover:border-primary transition-all hover:-translate-y-2 hover:shadow-xl"
-                }`}
+              }`}
             >
               {plan.recommended && (
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white text-primary font-black text-xs uppercase py-2 px-6 rounded-full tracking-widest shadow-lg">
@@ -410,21 +409,24 @@ const Pricing: React.FC = () => {
               )}
 
               <h3
-                className={`text-xl font-black uppercase tracking-wider mb-2 ${plan.recommended ? "text-white/90" : "text-slate-600"
-                  }`}
+                className={`text-xl font-black uppercase tracking-wider mb-2 ${
+                  plan.recommended ? "text-white/90" : "text-slate-600"
+                }`}
               >
                 {plan.name}
               </h3>
               <div className="flex items-baseline mb-8">
                 <span
-                  className={`text-5xl font-black ${plan.recommended ? "text-white" : "text-slate-900"
-                    }`}
+                  className={`text-5xl font-black ${
+                    plan.recommended ? "text-white" : "text-slate-900"
+                  }`}
                 >
                   {plan.price}
                 </span>
                 <span
-                  className={`ml-2 font-semibold ${plan.recommended ? "text-white/90" : "text-slate-500"
-                    }`}
+                  className={`ml-2 font-semibold ${
+                    plan.recommended ? "text-white/90" : "text-slate-500"
+                  }`}
                 >
                   / month
                 </span>
@@ -434,12 +436,14 @@ const Pricing: React.FC = () => {
                 {plan.features.map((feature, idx) => (
                   <li key={idx} className="flex items-start gap-3">
                     <Check
-                      className={`w-5 h-5 shrink-0 ${plan.recommended ? "text-white" : "text-primary"
-                        }`}
+                      className={`w-5 h-5 shrink-0 ${
+                        plan.recommended ? "text-white" : "text-primary"
+                      }`}
                     />
                     <span
-                      className={`text-sm font-medium ${plan.recommended ? "text-white/95" : "text-slate-600"
-                        }`}
+                      className={`text-sm font-medium ${
+                        plan.recommended ? "text-white/95" : "text-slate-600"
+                      }`}
                     >
                       {feature}
                     </span>
@@ -449,24 +453,20 @@ const Pricing: React.FC = () => {
 
               <Button
                 variant={plan.recommended ? "secondary" : "primary"}
-                className={`w-full justify-center ${plan.recommended
+                className={`w-full justify-center ${
+                  plan.recommended
                     ? "bg-white text-primary hover:bg-gray-50 shadow-lg"
                     : "bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
-                  }`}
+                }`}
                 onClick={() => setSelectedPlan(plan)}
               >
                 Choose {plan.name}
               </Button>
-
-              {!plan.recommended && (
-                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
-              )}
             </motion.div>
           ))}
         </div>
       </Section>
 
-      {/* FAQ Section */}
       <Section className="bg-gradient-to-b from-slate-50 to-white py-16 relative overflow-hidden">
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-emerald-400/5 rounded-full blur-3xl"></div>
@@ -524,7 +524,6 @@ const Pricing: React.FC = () => {
         </div>
       </Section>
 
-      {/* CTA Section */}
       <Section className="bg-white py-16">
         <motion.div
           className="max-w-5xl mx-auto"
