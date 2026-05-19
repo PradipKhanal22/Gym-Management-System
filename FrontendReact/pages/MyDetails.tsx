@@ -136,43 +136,89 @@ const MyDetails: React.FC = () => {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative h-[40vh] mt-20 flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <img 
-            src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&q=80" 
-            alt="Profile Background" 
-            className="w-full h-full object-cover scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-primary/40 to-slate-900/70"></div>
+      <section className="relative mt-20 overflow-hidden border-b border-slate-200 bg-slate-950 text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.24),transparent_28%),radial-gradient(circle_at_top_right,rgba(59,130,246,0.18),transparent_30%),linear-gradient(135deg,rgba(15,23,42,0.96),rgba(15,23,42,0.88))]" />
+        <div className="absolute -left-24 top-10 h-56 w-56 rounded-full bg-primary/20 blur-3xl" />
+        <div className="absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-emerald-400/15 blur-3xl" />
+
+        <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+          <div className="grid gap-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
+            >
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-black uppercase tracking-[0.3em] text-slate-300 backdrop-blur-sm">
+                <Shield className="h-3.5 w-3.5 text-emerald-300" />
+                Member profile
+              </div>
+
+              <h1 className="mt-5 text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
+                My Profile
+              </h1>
+              <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">
+                View and update your account details from one focused, easy-to-use profile area.
+                Everything here stays synced with your login session.
+              </p>
+
+              <div className="mt-8 flex flex-wrap gap-3">
+                <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-sm">
+                  <UserCircle className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400">Name</p>
+                    <p className="text-sm font-bold text-white">{user.name}</p>
+                  </div>
+                </div>
+
+                <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-sm">
+                  <Mail className="h-5 w-5 text-primary" />
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400">Email</p>
+                    <p className="max-w-[220px] truncate text-sm font-bold text-white">{user.email}</p>
+                  </div>
+                </div>
+
+                <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-sm">
+                  <Phone className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400">Phone</p>
+                    <p className="text-sm font-bold text-white">{user.phone || 'Not provided'}</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.35, delay: 0.1 }}
+              className="rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-[0_20px_80px_-30px_rgba(15,23,42,0.8)] backdrop-blur-md"
+            >
+              <div className="flex items-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-emerald-500 shadow-lg shadow-emerald-500/20">
+                  <UserCircle className="h-9 w-9 text-white" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">Profile status</p>
+                  <h2 className="mt-1 text-2xl font-black text-white">{user.role === 'admin' ? 'Administrator' : 'Member'}</h2>
+                  <p className="text-sm text-slate-300">Your account information is ready to edit.</p>
+                </div>
+              </div>
+
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-4">
+                  <p className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400">Account Type</p>
+                  <p className="mt-2 text-sm font-bold text-white">{user.role || 'User'}</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-4">
+                  <p className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400">Last Updated</p>
+                  <p className="mt-2 text-sm font-bold text-white">Live session sync</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
-        <div className="relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mb-6"
-          >
-            <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-primary to-emerald-500 flex items-center justify-center shadow-2xl">
-              <UserCircle className="w-20 h-20 text-white" />
-            </div>
-          </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-4xl md:text-5xl font-black text-white mb-2"
-          >
-            My Profile
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-lg text-white/90"
-          >
-            Manage your account information
-          </motion.p>
-        </div>
-      </div>
+      </section>
 
       {/* Profile Details Section */}
       <Section className="bg-gradient-to-b from-white to-slate-50 py-16">
