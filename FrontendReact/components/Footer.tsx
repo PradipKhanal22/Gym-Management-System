@@ -131,15 +131,15 @@ const Footer: React.FC = () => {
                   <MapPin className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="leading-tight">123 Voltage Ave</p>
-                  <p className="text-sm text-slate-400">Electric City, EC 90210</p>
+                  <p className="leading-tight">Kawasoti-09, Nawalpur</p>
+                  <p className="text-sm text-slate-400">Gandaki Province, Nepal</p>
                 </div>
               </li>
               <li className="flex items-center gap-4">
                 <div className="p-3 bg-primary/20 rounded-xl backdrop-blur-sm">
                   <Phone className="w-5 h-5 text-primary" />
                 </div>
-                <span>+1 (555) 123-4567</span>
+                <span>+977 9804453481</span>
               </li>
               <li className="flex items-center gap-4">
                 <div className="p-3 bg-primary/20 rounded-xl backdrop-blur-sm">

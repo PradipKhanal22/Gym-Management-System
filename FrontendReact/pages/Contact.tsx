@@ -120,8 +120,8 @@ const Contact: React.FC = () => {
 
             <div className="space-y-6 mb-12">
               {[
-                { icon: MapPin, title: "Visit Us", content: "123 Voltage Ave, Electric City, EC 90210" },
-                { icon: Phone, title: "Call Us", content: "+1 (555) 123-4567" },
+                { icon: MapPin, title: "Visit Us", content: "Kawasoti-09, Nawalpur, Gandaki Province, Nepal" },
+                { icon: Phone, title: "Call Us", content: "+977 9804453481" },
                 { icon: Mail, title: "Email Us", content: "hello@neonfit.gym" }
               ].map((item, idx) => (
                 <motion.div 
