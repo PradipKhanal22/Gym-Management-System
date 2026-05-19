@@ -104,7 +104,7 @@ const MessageList: React.FC = () => {
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
       
-      <div className="flex-1 ml-64 p-8">
+      <div className="flex-1 lg:ml-64 ml-0 p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">

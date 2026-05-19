@@ -68,7 +68,7 @@ const ServiceList: React.FC = () => {
   return (
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
-      <div className="flex-1 ml-64">
+      <div className="flex-1 lg:ml-64 ml-0">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-slate-200">
           <div className="px-8 py-6">
