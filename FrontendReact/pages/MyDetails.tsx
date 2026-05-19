@@ -5,11 +5,13 @@ import Section from '../components/Section';
 import Button from '../components/Button';
 import { toast } from '../components/Toast';
 import { useNavigate } from 'react-router-dom';
+import { adminProfileAPI } from '../src/constant/api/adminProfileAPI';
 
 const MyDetails: React.FC = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -32,6 +34,28 @@ const MyDetails: React.FC = () => {
         email: userData.email || '',
         phone: userData.phone || '',
       });
+
+      adminProfileAPI.getProfile()
+        .then((response) => {
+          if (response?.success && response?.data) {
+            const latestUser = {
+              ...userData,
+              ...response.data,
+            };
+
+            setUser(latestUser);
+            setFormData({
+              name: latestUser.name || '',
+              email: latestUser.email || '',
+              phone: latestUser.phone || '',
+            });
+
+            localStorage.setItem('user', JSON.stringify(latestUser));
+          }
+        })
+        .catch((error) => {
+          console.error('Error loading profile from API:', error);
+        });
     } catch (error) {
       console.error('Error parsing user data:', error);
       toast.error('Invalid session. Please login again.');
@@ -46,19 +70,44 @@ const MyDetails: React.FC = () => {
     });
   };
 
-  const handleSave = () => {
-    // Update localStorage with new data
-    const updatedUser = {
-      ...user,
-      ...formData,
-    };
-    localStorage.setItem('user', JSON.stringify(updatedUser));
-    setUser(updatedUser);
-    setIsEditing(false);
-    toast.success('Details updated successfully!');
-    
-    // Dispatch event to update navbar
-    window.dispatchEvent(new CustomEvent('userLoggedIn', { detail: updatedUser }));
+  const handleSave = async () => {
+    if (!formData.name.trim() || !formData.email.trim()) {
+      toast.error('Name and email are required');
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      const response = await adminProfileAPI.updateProfile({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+      });
+
+      const updatedUser = {
+        ...user,
+        ...response.data,
+      };
+
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+      setFormData({
+        name: updatedUser.name || '',
+        email: updatedUser.email || '',
+        phone: updatedUser.phone || '',
+      });
+      setIsEditing(false);
+      toast.success('Details updated successfully!');
+
+      // Dispatch events so the rest of the app refreshes immediately
+      window.dispatchEvent(new CustomEvent('userLoggedIn', { detail: updatedUser }));
+      window.dispatchEvent(new CustomEvent('userUpdated', { detail: updatedUser }));
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to update details');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleCancel = () => {
@@ -127,27 +176,27 @@ const MyDetails: React.FC = () => {
 
       {/* Profile Details Section */}
       <Section className="bg-gradient-to-b from-white to-slate-50 py-16">
-        <div className="max-w-4xl mx-auto">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-3xl shadow-xl border-2 border-slate-100 overflow-hidden"
+            className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_20px_80px_-35px_rgba(15,23,42,0.45)]"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-primary to-emerald-500 px-8 py-6 flex items-center justify-between">
+            <div className="flex items-center justify-between bg-gradient-to-r from-slate-950 via-slate-900 to-slate-800 px-6 py-6 sm:px-8">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm">
                   <UserCircle className="w-7 h-7 text-white" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-black text-white">Account Details</h2>
-                  <p className="text-white/80 text-sm">Your personal information</p>
+                  <p className="text-sm text-slate-300">Keep your account information current</p>
                 </div>
               </div>
               {!isEditing ? (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg transition-colors"
+                  className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-bold text-white transition hover:bg-white/15"
                 >
                   <Edit2 className="w-4 h-4 text-white" />
                   <span className="text-white font-bold text-sm">Edit</span>
@@ -156,14 +205,16 @@ const MyDetails: React.FC = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={handleSave}
-                    className="flex items-center gap-2 px-4 py-2 bg-white text-primary hover:bg-white/90 rounded-lg transition-colors"
+                    disabled={saving}
+                    className="flex items-center gap-2 rounded-2xl bg-white px-4 py-2 text-sm font-bold text-slate-950 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-70"
                   >
                     <Save className="w-4 h-4" />
-                    <span className="font-bold text-sm">Save</span>
+                    <span className="font-bold text-sm">{saving ? 'Saving...' : 'Save'}</span>
                   </button>
                   <button
                     onClick={handleCancel}
-                    className="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg transition-colors"
+                    disabled={saving}
+                    className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-bold text-white transition hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-70"
                   >
                     <X className="w-4 h-4 text-white" />
                     <span className="text-white font-bold text-sm">Cancel</span>
@@ -173,7 +224,7 @@ const MyDetails: React.FC = () => {
             </div>
 
             {/* Details Grid */}
-            <div className="p-8 space-y-6">
+            <div className="space-y-6 p-6 sm:p-8">
               {/* Full Name */}
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-bold text-slate-600 uppercase tracking-wider">
@@ -186,10 +237,10 @@ const MyDetails: React.FC = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-primary focus:outline-none transition-colors font-semibold text-slate-900"
+                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 font-semibold text-slate-900 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
                 ) : (
-                  <div className="px-4 py-3 bg-slate-50 rounded-xl border-2 border-slate-100">
+                  <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
                     <p className="text-lg font-bold text-slate-900">{user.name}</p>
                   </div>
                 )}
@@ -207,10 +258,10 @@ const MyDetails: React.FC = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-primary focus:outline-none transition-colors font-semibold text-slate-900"
+                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 font-semibold text-slate-900 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
                 ) : (
-                  <div className="px-4 py-3 bg-slate-50 rounded-xl border-2 border-slate-100">
+                  <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
                     <p className="text-lg font-bold text-slate-900">{user.email}</p>
                   </div>
                 )}
@@ -228,10 +279,10 @@ const MyDetails: React.FC = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-primary focus:outline-none transition-colors font-semibold text-slate-900"
+                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 font-semibold text-slate-900 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10"
                   />
                 ) : (
-                  <div className="px-4 py-3 bg-slate-50 rounded-xl border-2 border-slate-100">
+                  <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
                     <p className="text-lg font-bold text-slate-900">{user.phone || 'Not provided'}</p>
                   </div>
                 )}
@@ -243,7 +294,7 @@ const MyDetails: React.FC = () => {
                   <Shield className="w-4 h-4 text-primary" />
                   Account Type
                 </label>
-                <div className="px-4 py-3 bg-gradient-to-r from-primary/10 to-emerald-500/10 rounded-xl border-2 border-primary/20">
+                <div className="rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100 px-4 py-3">
                   <div className="flex items-center gap-2">
                     <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
                       user.role === 'admin' 
@@ -262,16 +313,16 @@ const MyDetails: React.FC = () => {
             </div>
 
             {/* Footer */}
-            <div className="px-8 py-6 bg-slate-50 border-t-2 border-slate-100">
-              <div className="flex items-center justify-between">
+            <div className="border-t border-slate-200 bg-slate-50 px-6 py-5 sm:px-8">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-sm text-slate-600">
-                  <span className="font-bold">Note:</span> Changes are saved locally on this device.
+                  <span className="font-bold">Note:</span> Changes are saved to your account.
                 </p>
                 {!isEditing && (
                   <Button
                     variant="outline"
                     onClick={() => navigate('/')}
-                    className="border-slate-300 hover:border-primary hover:text-primary"
+                    className="rounded-2xl border-slate-300 hover:border-primary hover:text-primary"
                   >
                     Back to Home
                   </Button>
@@ -285,7 +336,7 @@ const MyDetails: React.FC = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="mt-8 bg-gradient-to-r from-primary to-emerald-500 rounded-3xl p-8 text-white"
+            className="mt-8 rounded-[2rem] bg-gradient-to-r from-slate-950 via-slate-900 to-slate-800 p-8 text-white shadow-[0_20px_80px_-30px_rgba(15,23,42,0.8)]"
           >
             <h3 className="text-2xl font-black mb-4">Need Help?</h3>
             <p className="text-white/90 mb-6">
