@@ -16,8 +16,9 @@ import {
   MapPin,
 } from "lucide-react";
 import Button from "../components/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { PricingPlan } from "../types";
+import { toast } from "../components/Toast";
 
 const plans: PricingPlan[] = [
   {
@@ -72,6 +73,8 @@ const faqs = [
 ];
 
 const Pricing: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [selectedPlan, setSelectedPlan] = useState<PricingPlan | null>(null);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -82,22 +85,40 @@ const Pricing: React.FC = () => {
   });
 
   useEffect(() => {
-    // Load user data from localStorage
-    const userStr = localStorage.getItem("user");
-    if (userStr) {
-      try {
-        const userData = JSON.parse(userStr);
-        setFormData((prev) => ({
-          ...prev,
-          fullName: userData.name || "",
-          email: userData.email || "",
-          phone: userData.phone || "",
-        }));
-      } catch (error) {
-        console.error("Error loading user data:", error);
-      }
+    // Check for payment failure status in query parameters
+    const query = new URLSearchParams(location.search);
+    const status = query.get("status");
+    const message = query.get("message");
+    if (status === "failure" && message) {
+      toast.error(decodeURIComponent(message));
+      // Clear query params to prevent double toasts
+      navigate("/pricing", { replace: true });
     }
-  }, []);
+  }, [location, navigate]);
+
+  const handleChoosePlan = (plan: PricingPlan) => {
+    const userStr = localStorage.getItem("user");
+    if (!userStr) {
+      toast.error("Please log in to purchase a membership plan.");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const userData = JSON.parse(userStr);
+      setFormData({
+        fullName: userData.name || "",
+        email: userData.email || "",
+        phone: userData.phone || "",
+        address: "",
+        city: "",
+      });
+    } catch (error) {
+      console.error("Error loading user data:", error);
+    }
+
+    setSelectedPlan(plan);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -110,8 +131,18 @@ const Pricing: React.FC = () => {
     e.preventDefault();
 
     if (!selectedPlan) {
-      alert("Please select a plan");
+      toast.error("Please select a plan");
       return;
+    }
+
+    const userStr = localStorage.getItem("user");
+    let token = "";
+    if (userStr) {
+      try {
+        token = JSON.parse(userStr).token || "";
+      } catch (err) {
+        console.error(err);
+      }
     }
 
     try {
@@ -121,6 +152,8 @@ const Pricing: React.FC = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
+          ...(token && { "Authorization": `Bearer ${token}` }),
         },
         body: JSON.stringify({
           full_name: formData.fullName,
@@ -133,7 +166,8 @@ const Pricing: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to initiate payment");
+        const errData = await response.json();
+        throw new Error(errData.message || "Failed to initiate payment");
       }
 
       const data = await response.json();
@@ -154,9 +188,9 @@ const Pricing: React.FC = () => {
       document.body.appendChild(esewaForm);
       esewaForm.submit();
 
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert("Something went wrong. Please try again.");
+      toast.error(error.message || "Something went wrong. Please try again.");
     }
   };
 
@@ -453,7 +487,7 @@ const Pricing: React.FC = () => {
                     ? "bg-white text-primary hover:bg-gray-50 shadow-lg"
                     : "bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
                   }`}
-                onClick={() => setSelectedPlan(plan)}
+                onClick={() => handleChoosePlan(plan)}
               >
                 Choose {plan.name}
               </Button>

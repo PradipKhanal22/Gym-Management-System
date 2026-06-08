@@ -10,7 +10,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\ContactMessageController;
 use App\Http\Controllers\Api\OrderController;
-use App\Http\Controllers\EsewaController;
+use App\Http\Controllers\Api\EsewaController;
+use App\Http\Controllers\Api\MembershipController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -56,17 +57,22 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::post('/esewa/pay', [EsewaController::class, 'pay']);
-    Route::get('/esewa/success', [EsewaController::class, 'success']);
-    Route::get('/esewa/failure', [EsewaController::class, 'failure']);
 
 
     // Admin Order Routes
     Route::get('/admin/orders', [OrderController::class, 'getAllOrders']);
     Route::put('/admin/orders/{id}/status', [OrderController::class, 'updateStatus']);
 
+    // Admin Membership Routes
+    Route::get('/admin/memberships', [MembershipController::class, 'index']);
+
     // Contact Messages Routes
     Route::post('/contact-messages', [ContactMessageController::class, 'store']);
 });
+
+// eSewa Public Callback Routes
+Route::get('/esewa/success', [EsewaController::class, 'success'])->name('esewa.success');
+Route::get('/esewa/failure', [EsewaController::class, 'failure'])->name('esewa.failure');
 
 // Admin Contact Messages Routes (Protected)
 Route::middleware('auth:sanctum')->group(function () {

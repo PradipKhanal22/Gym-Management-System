@@ -33,13 +33,13 @@ return [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
+    ],
 
-        'esewa' => [
-    'url' => env('ESEWA_URL'),
-    'verify_url' => env('ESEWA_VERIFY_URL'),
-    'merchant' => env('ESEWA_MERCHANT_CODE'),
-],
-
+    'esewa' => [
+        'url' => env('ESEWA_URL', 'https://rc-epay.esewa.com.np/api/epay/main/v2/form'),
+        'verify_url' => env('ESEWA_VERIFY_URL', 'https://rc-epay.esewa.com.np/api/epay/transaction/status/'),
+        'merchant' => env('ESEWA_MERCHANT', 'EPAYTEST'),
+        'secret' => env('ESEWA_SECRET_KEY', '8g8DGWZtE9b0c'),
     ],
 
 ];

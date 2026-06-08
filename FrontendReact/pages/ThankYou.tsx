@@ -10,10 +10,22 @@ const ThankYou: React.FC = () => {
   const [orderData, setOrderData] = useState<any>(null);
 
   useEffect(() => {
-    // Check if we have order data from successful checkout
+    // Check if we have order data from successful checkout or query parameters
+    const query = new URLSearchParams(location.search);
+    const status = query.get('status');
+    const message = query.get('message');
+    const orderId = query.get('orderId');
+
     if (location.state && location.state.success) {
       setHasSuccess(true);
       setOrderData(location.state);
+    } else if (status === 'success') {
+      setHasSuccess(true);
+      setOrderData({
+        success: true,
+        message: message ? decodeURIComponent(message) : 'Payment processed successfully!',
+        orderId: orderId || undefined
+      });
     } else {
       setHasSuccess(false);
     }
