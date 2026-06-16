@@ -103,13 +103,6 @@ const Sidebar = () => {
           </Link>
         </div>
 
-        <div className="px-5 pt-5">
-          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-sm">
-            <p className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">Navigation</p>
-            <p className="mt-1 text-sm font-medium text-slate-300">Access the main admin sections quickly.</p>
-          </div>
-        </div>
-
         {/* Menu Items */}
         <nav className="flex-1 space-y-2 overflow-y-auto px-4 py-5">
           {menuItems.map((item) => {

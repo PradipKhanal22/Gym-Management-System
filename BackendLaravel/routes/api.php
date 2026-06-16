@@ -57,6 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::post('/esewa/pay', [EsewaController::class, 'pay']);
+    Route::post('/esewa/pay-order', [EsewaController::class, 'payOrder']);
 
 
     // Admin Order Routes

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\Payment;
 use App\Models\Membership;
+use App\Models\Order;
 
 class EsewaController extends Controller
 {
@@ -45,6 +46,7 @@ class EsewaController extends Controller
         // Save pending payment record
         Payment::create([
             'user_id' => $user->id,
+            'payment_type' => 'membership',
             'transaction_uuid' => $transactionUuid,
             'amount' => $request->amount,
             'plan_name' => $request->plan,
@@ -54,8 +56,6 @@ class EsewaController extends Controller
         $secretKey = config('services.esewa.secret');
         $productCode = config('services.esewa.merchant');
 
-        // Format amount with 2 decimal places — this string MUST be identical
-        // in both the HMAC message and the total_amount field posted to eSewa.
         $totalAmount = number_format((float) $request->amount, 2, '.', '');
 
         $message = "total_amount={$totalAmount},transaction_uuid={$transactionUuid},product_code={$productCode}";
@@ -73,13 +73,87 @@ class EsewaController extends Controller
             'params' => [
                 'amount' => $totalAmount,
                 'tax_amount' => '0',
-                'total_amount' => $totalAmount,   // Must match signature exactly
+                'total_amount' => $totalAmount,
                 'transaction_uuid' => $transactionUuid,
                 'product_code' => $productCode,
                 'product_service_charge' => '0',
                 'product_delivery_charge' => '0',
                 'success_url' => route('esewa.success'),
                 'failure_url' => route('esewa.failure'),
+                'signed_field_names' => 'total_amount,transaction_uuid,product_code',
+                'signature' => $signature,
+            ]
+        ]);
+    }
+
+    /**
+     * Initiate eSewa payment for product orders
+     */
+    public function payOrder(Request $request)
+    {
+        $request->validate([
+            'order_id' => 'required|numeric',
+            'amount' => 'required|numeric',
+        ]);
+
+        $user = $request->user();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized user.'
+            ], 401);
+        }
+
+        $order = Order::where('id', $request->order_id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found.'
+            ], 404);
+        }
+
+        $timestamp = time();
+        $transactionUuid = "NEONFIT_ORDER_{$order->id}_{$timestamp}";
+
+        // Save pending payment record
+        Payment::create([
+            'user_id' => $user->id,
+            'payment_type' => 'order',
+            'order_id' => $order->id,
+            'transaction_uuid' => $transactionUuid,
+            'amount' => $request->amount,
+            'status' => 'pending',
+        ]);
+
+        $secretKey = config('services.esewa.secret');
+        $productCode = config('services.esewa.merchant');
+
+        $totalAmount = number_format((float) $request->amount, 2, '.', '');
+
+        $message = "total_amount={$totalAmount},transaction_uuid={$transactionUuid},product_code={$productCode}";
+        $signature = base64_encode(hash_hmac('sha256', $message, $secretKey, true));
+
+        Log::info('Initiating eSewa Payment for Order', [
+            'user_id' => $user->id,
+            'order_id' => $order->id,
+            'transaction_uuid' => $transactionUuid,
+        ]);
+
+        return response()->json([
+            'url' => config('services.esewa.url'),
+            'params' => [
+                'amount' => $totalAmount,
+                'tax_amount' => '0',
+                'total_amount' => $totalAmount,
+                'transaction_uuid' => $transactionUuid,
+                'product_code' => $productCode,
+                'product_service_charge' => '0',
+                'product_delivery_charge' => '0',
+                'success_url' => route('esewa.order.success'),
+                'failure_url' => route('esewa.order.failure'),
                 'signed_field_names' => 'total_amount,transaction_uuid,product_code',
                 'signature' => $signature,
             ]
@@ -108,11 +182,7 @@ class EsewaController extends Controller
             // Verify local HMAC-SHA256 signature
             $secretKey = config('services.esewa.secret');
             
-            // Format total_amount as it is returned (can be string or numeric)
-            // eSewa returns total_amount exactly as formatted. But we must match the exact string returned.
             $totalAmount = $decoded['total_amount'];
-            
-            // Replace commas inside amount if any (e.g. 1,000)
             $totalAmountStr = str_replace(',', '', $totalAmount);
             
             $message = "total_amount={$totalAmountStr},transaction_uuid={$decoded['transaction_uuid']},product_code={$decoded['product_code']}";
@@ -127,7 +197,7 @@ class EsewaController extends Controller
                 return redirect('http://localhost:3000/pricing?status=failure&message=' . urlencode('Signature verification failed. Potential tampering.'));
             }
 
-            // Optional: Server-to-server transaction verification check
+            // Server-to-server transaction verification
             $verifyUrl = config('services.esewa.verify_url');
             $statusResponse = Http::get($verifyUrl, [
                 'product_code' => $decoded['product_code'],
@@ -141,8 +211,6 @@ class EsewaController extends Controller
                 'body' => $statusResponse->body(),
             ]);
 
-            // Note: In some local sandbox setups, the verification endpoint might be slow or return error.
-            // We verify signature first, and then double check the response status.
             $isComplete = false;
             if ($statusResponse->successful()) {
                 $statusJson = $statusResponse->json();
@@ -151,7 +219,7 @@ class EsewaController extends Controller
                 }
             } else {
                 Log::warning('eSewa transaction verification API call unsuccessful, falling back to signature check');
-                $isComplete = true; // Fallback to trust the verified signature in local environment
+                $isComplete = true;
             }
 
             if (!$isComplete) {
@@ -202,6 +270,7 @@ class EsewaController extends Controller
                     } else {
                         Payment::create([
                             'user_id' => $user->id,
+                            'payment_type' => 'membership',
                             'transaction_uuid' => $decoded['transaction_uuid'],
                             'amount' => floatval($totalAmountStr),
                             'plan_name' => $planName,
@@ -225,11 +294,139 @@ class EsewaController extends Controller
         }
     }
 
+    /**
+     * eSewa success callback for product orders
+     */
+    public function orderSuccess(Request $request)
+    {
+        $encodedData = $request->query('data');
+        if (!$encodedData) {
+            Log::error('eSewa order success called without data');
+            return redirect('http://localhost:3000/checkout?status=failure&message=' . urlencode('No data received from payment gateway.'));
+        }
+
+        try {
+            $decodedJson = base64_decode($encodedData);
+            $decoded = json_decode($decodedJson, true);
+
+            Log::info('eSewa Order Callback Success Received', ['decoded' => $decoded]);
+
+            if (!$decoded || !isset($decoded['signature']) || !isset($decoded['transaction_uuid']) || !isset($decoded['total_amount']) || !isset($decoded['product_code'])) {
+                Log::error('eSewa order success callback has invalid payload structure', ['decoded' => $decoded]);
+                return redirect('http://localhost:3000/checkout?status=failure&message=' . urlencode('Invalid payment response details.'));
+            }
+
+            // Verify local HMAC-SHA256 signature
+            $secretKey = config('services.esewa.secret');
+            $totalAmount = $decoded['total_amount'];
+            $totalAmountStr = str_replace(',', '', $totalAmount);
+            
+            $message = "total_amount={$totalAmountStr},transaction_uuid={$decoded['transaction_uuid']},product_code={$decoded['product_code']}";
+            $computedSignature = base64_encode(hash_hmac('sha256', $message, $secretKey, true));
+
+            if ($computedSignature !== $decoded['signature']) {
+                Log::error('eSewa order HMAC signature mismatch', [
+                    'received' => $decoded['signature'],
+                    'computed' => $computedSignature,
+                ]);
+                return redirect('http://localhost:3000/checkout?status=failure&message=' . urlencode('Signature verification failed.'));
+            }
+
+            // Server-to-server transaction verification
+            $verifyUrl = config('services.esewa.verify_url');
+            $statusResponse = Http::get($verifyUrl, [
+                'product_code' => $decoded['product_code'],
+                'total_amount' => $totalAmountStr,
+                'transaction_uuid' => $decoded['transaction_uuid'],
+            ]);
+
+            $isComplete = false;
+            if ($statusResponse->successful()) {
+                $statusJson = $statusResponse->json();
+                if (isset($statusJson['status']) && $statusJson['status'] === 'COMPLETE') {
+                    $isComplete = true;
+                }
+            } else {
+                Log::warning('eSewa order transaction verification API call unsuccessful, falling back to signature check');
+                $isComplete = true;
+            }
+
+            if (!$isComplete) {
+                Log::error('eSewa server confirmed order payment was not completed');
+                return redirect('http://localhost:3000/checkout?status=failure&message=' . urlencode('Payment verification failed.'));
+            }
+
+            // Parse transaction UUID: NEONFIT_ORDER_{orderId}_{timestamp}
+            preg_match('/NEONFIT_ORDER_(\d+)_/', $decoded['transaction_uuid'], $matches);
+            if (count($matches) === 2) {
+                $orderId = $matches[1];
+
+                $order = Order::find($orderId);
+                if ($order) {
+                    // Update order payment status
+                    $order->update([
+                        'payment_status' => 'paid',
+                    ]);
+
+                    Log::info('Order payment confirmed via eSewa', ['order_id' => $order->id]);
+
+                    // Update payment record
+                    $payment = Payment::where('transaction_uuid', $decoded['transaction_uuid'])->first();
+                    if ($payment) {
+                        $payment->update([
+                            'status' => 'completed',
+                            'esewa_transaction_code' => $decoded['transaction_code'] ?? null,
+                            'response_payload' => $decoded,
+                        ]);
+                    } else {
+                        Payment::create([
+                            'user_id' => $order->user_id,
+                            'payment_type' => 'order',
+                            'order_id' => $order->id,
+                            'transaction_uuid' => $decoded['transaction_uuid'],
+                            'amount' => floatval($totalAmountStr),
+                            'status' => 'completed',
+                            'esewa_transaction_code' => $decoded['transaction_code'] ?? null,
+                            'response_payload' => $decoded,
+                        ]);
+                    }
+
+                    $message = urlencode("Your order #{$order->id} has been paid successfully via eSewa!");
+                    return redirect("http://localhost:3000/thank-you?status=success&message={$message}&orderId={$order->id}");
+                }
+            }
+
+            Log::error('eSewa order payment succeeded, but order details could not be parsed', ['uuid' => $decoded['transaction_uuid']]);
+            return redirect('http://localhost:3000/checkout?status=failure&message=' . urlencode('Could not identify order record.'));
+
+        } catch (\Exception $e) {
+            Log::error('eSewa order callback exception occurred', ['exception' => $e->getMessage()]);
+            return redirect('http://localhost:3000/checkout?status=failure&message=' . urlencode('An unexpected error occurred during verification.'));
+        }
+    }
+
+    /**
+     * eSewa failure callback for product orders
+     */
+    public function orderFailure(Request $request)
+    {
+        Log::warning('eSewa order payment failed callback triggered', ['query' => $request->all()]);
+        
+        $uuid = $request->query('pid') ?? $request->query('transaction_uuid');
+        if ($uuid) {
+            $payment = Payment::where('transaction_uuid', $uuid)->first();
+            if ($payment) {
+                $payment->update(['status' => 'failed']);
+            }
+        }
+
+        return redirect('http://localhost:3000/checkout?status=failure&message=' . urlencode('Payment was cancelled or failed. Please try again.'));
+    }
+
     public function failure(Request $request)
     {
         Log::warning('eSewa payment failed callback triggered', ['query' => $request->all()]);
         
-        // Try to update payment status to failed if pid / uuid is passed (v2 sometimes passes query parameters in failure too)
         $uuid = $request->query('pid') ?? $request->query('transaction_uuid');
         if ($uuid) {
             $payment = Payment::where('transaction_uuid', $uuid)->first();
