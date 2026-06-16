@@ -474,17 +474,16 @@ const Dashboard = () => {
       <div className="flex-1 lg:ml-72 ml-0">
         <header className="relative overflow-visible border-b border-slate-200/80 bg-white/90 text-slate-900 shadow-[0_12px_40px_-24px_rgba(15,23,42,0.5)] backdrop-blur-xl">
           <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(16,185,129,0.06),transparent_35%,rgba(59,130,246,0.06))]" />
-          <div className="relative px-6 py-6 lg:px-8">
-            <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
-              <div className="max-w-3xl">
-                <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-black uppercase tracking-[0.32em] text-slate-500">
-                  <LineChart className="h-3.5 w-3.5 text-primary" />
-                  Admin control center
+          <div className="relative px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+            <div className="flex flex-col gap-4 sm:gap-5 xl:flex-row xl:items-end xl:justify-between">
+              <div className="max-w-3xl min-w-0">
+                <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2 sm:px-3 py-1 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] sm:tracking-[0.32em] text-slate-500">
+                  <LineChart className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
+                  <span className="truncate">Admin control center</span>
                 </div>
-                <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-950 lg:text-5xl">Dashboard</h1>
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 lg:text-base">
+                <h1 className="mt-3 sm:mt-4 text-2xl sm:text-3xl lg:text-5xl font-black tracking-tight text-slate-950">Dashboard</h1>
+                <p className="mt-2 sm:mt-3 max-w-2xl text-xs sm:text-sm lg:text-base leading-5 sm:leading-6 text-slate-600">
                   Monitor products, orders, memberships, and messages from a calm, high-signal command center.
-                  Everything important is surfaced without visual clutter.
                 </p>
               </div>
 
@@ -517,7 +516,7 @@ const Dashboard = () => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 12, scale: 0.96 }}
                         transition={{ duration: 0.18 }}
-                        className="absolute right-0 z-[80] mt-3 w-[380px] overflow-hidden rounded-3xl border border-slate-200 bg-white text-slate-900 shadow-2xl"
+                        className="absolute right-0 z-[80] mt-3 w-[calc(100vw-2rem)] max-w-[380px] overflow-hidden rounded-3xl border border-slate-200 bg-white text-slate-900 shadow-2xl"
                       >
                         <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
                           <div>
@@ -600,7 +599,7 @@ const Dashboard = () => {
           </div>
         </header>
 
-        <div className="space-y-8 p-8">
+        <div className="space-y-8 p-4 sm:p-6 md:p-8">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
             {statCards.map((card, index) => {
               const Icon = card.icon;

@@ -48,7 +48,10 @@ class AuthController extends Controller
             Log::info("Welcome email sent successfully to {$user->email}");
         } catch (\Exception $e) {
             // Log error but don't fail the registration
-            Log::error("Failed to send welcome email: " . $e->getMessage());
+            Log::error("Failed to send welcome email to {$user->email}: " . $e->getMessage(), [
+                'exception' => get_class($e),
+                'trace' => $e->getTraceAsString(),
+            ]);
         }
 
         // Create token for newly registered user
@@ -64,6 +67,9 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'phone' => $user->phone,
                     'role' => $user->role,
+                    'membership_plan' => $user->membership_plan,
+                    'membership_status' => $user->membership_status,
+                    'membership_expires_at' => $user->membership_expires_at,
                 ],
                 'token' => $token
             ]
@@ -145,6 +151,9 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'phone' => $user->phone,
                     'role' => $user->role ?? 'user',
+                    'membership_plan' => $user->membership_plan,
+                    'membership_status' => $user->membership_status,
+                    'membership_expires_at' => $user->membership_expires_at,
                 ],
                 'token' => $token,
                 'redirect' => '/'

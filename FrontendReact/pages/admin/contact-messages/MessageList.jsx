@@ -89,11 +89,11 @@ const MessageList = () => {
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
       
-      <div className="flex-1 lg:ml-64 ml-0 p-8">
+      <div className="flex-1 lg:ml-64 ml-0 p-4 sm:p-6 md:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-black text-slate-900 mb-2">Contact Messages</h1>
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2">Contact Messages</h1>
             <p className="text-slate-600">View and manage customer inquiries</p>
           </div>
 
@@ -103,7 +103,7 @@ const MessageList = () => {
               <p className="mt-4 text-slate-600">Loading messages...</p>
             </div>
           ) : messages.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-3xl border-2 border-slate-200">
+            <div className="text-center p-8 sm:p-12 md:p-16 bg-white rounded-3xl border-2 border-slate-200">
               <Mail className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-slate-900 mb-2">No Messages Yet</h3>
               <p className="text-slate-600">Contact messages will appear here</p>
@@ -111,7 +111,7 @@ const MessageList = () => {
           ) : (
             <div className="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full min-w-[700px]">
                   <thead>
                     <tr className="border-b border-slate-200 bg-slate-50">
                       <th className="px-6 py-4 text-left text-sm font-black text-slate-700 uppercase tracking-wider">
@@ -224,7 +224,7 @@ const MessageList = () => {
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white rounded-2xl p-6 max-w-2xl w-full shadow-2xl border-2 border-slate-200"
+                className="bg-white rounded-2xl p-6 sm:p-8 max-w-2xl w-full shadow-2xl border-2 border-slate-200"
               >
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-slate-900">Message Details</h2>
@@ -310,7 +310,7 @@ const MessageList = () => {
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl border-2 border-slate-200"
+                className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl border-2 border-slate-200"
               >
                 <div className="text-center">
                   <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">

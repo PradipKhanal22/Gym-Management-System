@@ -31,12 +31,17 @@ const MembershipList = () => {
     }
   };
 
-  const getDaysRemaining = (endDateStr) => {
+  const getDaysRemaining = (endDateStr, planName) => {
     if (!endDateStr) return 0;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const endDate = new Date(endDateStr);
     endDate.setHours(0, 0, 0, 0);
+
+    // Day Pass is always "Today" if not expired
+    if (planName === 'Day Pass') {
+      return endDate >= today ? 0 : -1;
+    }
 
     const timeDiff = endDate.getTime() - today.getTime();
     const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
@@ -70,14 +75,14 @@ const MembershipList = () => {
       <div className="flex-1 lg:ml-64 ml-0">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-slate-200">
-          <div className="px-8 py-6">
-            <div className="flex items-center justify-between">
+          <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-emerald-500 flex items-center justify-center">
                   <CreditCard className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-black text-slate-900">Memberships</h1>
+                  <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Memberships</h1>
                   <p className="text-slate-600 mt-1">Monitor active and expired gym subscriptions</p>
                 </div>
               </div>
@@ -86,7 +91,7 @@ const MembershipList = () => {
         </header>
 
         {/* Content */}
-        <div className="p-8">
+        <div className="p-4 sm:p-6 md:p-8">
           {/* Filters & Actions */}
           <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="relative flex-grow max-w-md">
@@ -118,7 +123,7 @@ const MembershipList = () => {
           ) : (
             <div className="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full min-w-[800px]">
                   <thead>
                     <tr className="border-b border-slate-200 bg-slate-50">
                       <th className="px-6 py-4 text-left text-sm font-black text-slate-700 uppercase tracking-wider">
@@ -146,8 +151,9 @@ const MembershipList = () => {
                   </thead>
                   <tbody className="divide-y divide-slate-200">
                     {filteredMemberships.map((membership, index) => {
-                      const daysLeft = getDaysRemaining(membership.end_date);
-                      const isExpired = daysLeft === 0;
+                      const daysLeft = getDaysRemaining(membership.end_date, membership.plan_name);
+                      const isDayPass = membership.plan_name === 'Day Pass';
+                      const isExpired = isDayPass ? daysLeft === -1 : daysLeft === 0;
 
                       return (
                         <motion.tr
@@ -216,7 +222,7 @@ const MembershipList = () => {
                             <div className="flex items-center gap-2">
                               <Clock className={`w-4 h-4 shrink-0 ${isExpired ? 'text-red-500' : 'text-amber-500'}`} />
                               <span className={`text-base font-black ${isExpired ? 'text-red-600' : 'text-slate-800'}`}>
-                                {isExpired ? '0 Days' : `${daysLeft} Days`}
+                                {isExpired ? 'Expired' : (isDayPass ? 'Today' : `${daysLeft} Days`)}
                               </span>
                             </div>
                           </td>

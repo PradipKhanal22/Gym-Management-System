@@ -14,22 +14,26 @@ import {
   Mail,
   Phone,
   MapPin,
+  Clock,
 } from "lucide-react";
 import Button from "../components/Button";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "../components/Toast";
+import { BASE_URL } from "../src/constant/api";
 
 const plans = [
   {
     id: 1,
     name: "Day Pass",
     price: "Rs. 500",
+    period: "day",
     features: ["Single day access", "Locker room access", "Free WiFi"],
   },
   {
     id: 2,
     name: "Pro Member",
     price: "Rs. 5500",
+    period: "month",
     features: [
       "24/7 Gym Access",
       "Group Classes Included",
@@ -42,6 +46,7 @@ const plans = [
     id: 3,
     name: "Elite",
     price: "Rs. 8900",
+    period: "month",
     features: [
       "All Pro Benefits",
       "Unlimited Sauna/Recovery",
@@ -75,6 +80,7 @@ const Pricing = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [membershipStatus, setMembershipStatus] = useState(null);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -94,6 +100,35 @@ const Pricing = () => {
       navigate("/pricing", { replace: true });
     }
   }, [location, navigate]);
+
+  // Fetch membership status on mount
+  useEffect(() => {
+    const fetchMembershipStatus = async () => {
+      const userStr = localStorage.getItem("user");
+      if (!userStr) return;
+
+      try {
+        const userData = JSON.parse(userStr);
+        if (!userData.token) return;
+
+        const response = await fetch(`${BASE_URL}/membership/status`, {
+          headers: {
+            "Authorization": `Bearer ${userData.token}`,
+            "Accept": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setMembershipStatus(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching membership status:", error);
+      }
+    };
+
+    fetchMembershipStatus();
+  }, []);
 
   const handleChoosePlan = (plan) => {
     const userStr = localStorage.getItem("user");
@@ -217,15 +252,15 @@ const Pricing = () => {
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="fixed left-0 top-0 h-full w-full md:w-[500px] bg-white shadow-2xl z-50 overflow-y-auto"
             >
-              <div className="p-8">
+              <div className="p-6 sm:p-8">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                   <div>
-                    <h2 className="text-3xl font-black text-slate-900 mb-2">
+                    <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-2">
                       {selectedPlan.name}
                     </h2>
-                    <p className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">
-                      {selectedPlan.price}/month
+                    <p className="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">
+                      {selectedPlan.price}/{selectedPlan.period}
                     </p>
                   </div>
                   <button
@@ -366,7 +401,7 @@ const Pricing = () => {
         )}
       </AnimatePresence>
       {/* Hero Section */}
-      <div className="relative h-[60vh] mt-20 flex items-center justify-center overflow-hidden">
+      <div className="relative h-[50vh] sm:h-[60vh] mt-20 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=1920&q=80"
@@ -380,7 +415,7 @@ const Pricing = () => {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-black uppercase text-white mb-4"
+            className="text-3xl sm:text-5xl md:text-7xl font-black uppercase text-white mb-4"
             style={{ textShadow: "2px 2px 8px rgba(0,0,0,0.5)" }}
           >
             Membership
@@ -389,7 +424,7 @@ const Pricing = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-xl text-white font-medium"
+            className="text-sm sm:text-base md:text-xl text-white font-medium"
             style={{ textShadow: "1px 1px 4px rgba(0,0,0,0.6)" }}
           >
             Invest in yourself with flexible plans tailored to your needs.
@@ -398,7 +433,7 @@ const Pricing = () => {
       </div>
 
       {/* Pricing Plans */}
-      <Section className="bg-white py-16">
+      <Section className="bg-white py-10 sm:py-16">
         <div className="text-center mb-12 max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -410,20 +445,20 @@ const Pricing = () => {
                 Choose Your Plan
               </span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-4">
               Flexible{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">
                 Memberships
               </span>
             </h2>
-            <p className="text-slate-600 text-lg max-w-2xl mx-auto">
+            <p className="text-slate-600 text-sm sm:text-lg max-w-2xl mx-auto">
               Invest in yourself with flexible plans tailored to your fitness
               goals and lifestyle.
             </p>
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
           {plans.map((plan, idx) => (
             <motion.div
               key={plan.id}
@@ -432,7 +467,7 @@ const Pricing = () => {
               transition={{ delay: idx * 0.1 }}
               viewport={{ once: true }}
               className={`relative p-8 rounded-3xl border flex flex-col ${plan.recommended
-                  ? "bg-gradient-to-br from-primary to-emerald-500 border-primary shadow-2xl scale-105 z-10"
+                  ? "bg-gradient-to-br from-primary to-emerald-500 border-primary shadow-2xl md:scale-105 z-10"
                   : "bg-white border-slate-200 hover:border-primary transition-all hover:-translate-y-2 hover:shadow-xl"
                 }`}
             >
@@ -450,7 +485,7 @@ const Pricing = () => {
               </h3>
               <div className="flex items-baseline mb-8">
                 <span
-                  className={`text-5xl font-black ${plan.recommended ? "text-white" : "text-slate-900"
+                  className={`text-4xl sm:text-5xl font-black ${plan.recommended ? "text-white" : "text-slate-900"
                     }`}
                 >
                   {plan.price}
@@ -459,7 +494,7 @@ const Pricing = () => {
                   className={`ml-2 font-semibold ${plan.recommended ? "text-white/90" : "text-slate-500"
                     }`}
                 >
-                  / month
+                  / {plan.period}
                 </span>
               </div>
 
@@ -480,16 +515,40 @@ const Pricing = () => {
                 ))}
               </ul>
 
-              <Button
-                variant={plan.recommended ? "secondary" : "primary"}
-                className={`w-full justify-center ${plan.recommended
-                    ? "bg-white text-primary hover:bg-gray-50 shadow-lg"
-                    : "bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
-                  }`}
-                onClick={() => handleChoosePlan(plan)}
-              >
-                Choose {plan.name}
-              </Button>
+              {membershipStatus?.has_active_membership && membershipStatus?.plan_name === plan.name ? (
+                <div className={`w-full justify-center py-3 px-4 rounded-xl flex items-center gap-2 ${
+                  plan.recommended
+                    ? "bg-white/20 text-white"
+                    : "bg-primary/10 text-primary"
+                }`}>
+                  <Clock className="w-5 h-5" />
+                  <span className="font-black text-sm">
+                    {membershipStatus.is_day_pass ? "Active today" : `Active - ${membershipStatus.days_remaining} day${membershipStatus.days_remaining !== 1 ? 's' : ''} remaining`}
+                  </span>
+                </div>
+              ) : membershipStatus?.has_active_membership ? (
+                <div className={`w-full justify-center py-3 px-4 rounded-xl flex items-center gap-2 ${
+                  plan.recommended
+                    ? "bg-white/20 text-white"
+                    : "bg-slate-100 text-slate-500"
+                }`}>
+                  <Check className="w-5 h-5" />
+                  <span className="font-black text-sm">
+                    Your Plan: {membershipStatus.plan_name}
+                  </span>
+                </div>
+              ) : (
+                <Button
+                  variant={plan.recommended ? "secondary" : "primary"}
+                  className={`w-full justify-center ${plan.recommended
+                      ? "bg-white text-primary hover:bg-gray-50 shadow-lg"
+                      : "bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
+                    }`}
+                  onClick={() => handleChoosePlan(plan)}
+                >
+                  Choose {plan.name}
+                </Button>
+              )}
 
               {!plan.recommended && (
                 <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-b-3xl"></div>
@@ -500,11 +559,11 @@ const Pricing = () => {
       </Section>
 
       {/* FAQ Section */}
-      <Section className="bg-gradient-to-b from-slate-50 to-white py-16 relative overflow-hidden">
+      <Section className="bg-gradient-to-b from-slate-50 to-white py-10 sm:py-16 relative overflow-hidden">
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-emerald-400/5 rounded-full blur-3xl"></div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-12 max-w-7xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -515,13 +574,13 @@ const Pricing = () => {
                 Need Help?
               </span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-6">
               Frequently Asked{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">
                 Questions
               </span>
             </h2>
-            <p className="text-slate-600 text-lg leading-relaxed mb-8">
+            <p className="text-slate-600 text-sm sm:text-lg leading-relaxed mb-8">
               Can't find what you're looking for? Contact our support team and
               we'll be happy to help.
             </p>
@@ -558,22 +617,22 @@ const Pricing = () => {
       </Section>
 
       {/* CTA Section */}
-      <Section className="bg-white py-16">
+      <Section className="bg-white py-10 sm:py-16">
         <motion.div
           className="max-w-5xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <div className="bg-gradient-to-br from-primary via-emerald-500 to-primary rounded-3xl p-12 md:p-16 shadow-2xl relative overflow-hidden">
+          <div className="bg-gradient-to-br from-primary via-emerald-500 to-primary rounded-3xl p-6 sm:p-10 md:p-16 shadow-2xl relative overflow-hidden">
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white rounded-full blur-[150px]"></div>
             </div>
             <div className="text-center relative z-10">
-              <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
+              <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white mb-6">
                 Start Your Free 7-Day Trial
               </h2>
-              <p className="text-white/95 text-xl leading-relaxed mb-8 max-w-2xl mx-auto">
+              <p className="text-white/95 text-sm sm:text-base md:text-xl leading-relaxed mb-8 max-w-2xl mx-auto">
                 Experience everything NeonFit has to offer with no commitment
                 required.
               </p>

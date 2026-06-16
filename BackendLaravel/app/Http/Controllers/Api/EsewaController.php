@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Models\Payment;
 use App\Models\Membership;
 use App\Models\Order;
+use App\Mail\MembershipConfirmation;
 
 class EsewaController extends Controller
 {
@@ -30,6 +32,14 @@ class EsewaController extends Controller
                 'success' => false,
                 'message' => 'Unauthorized user.'
             ], 401);
+        }
+
+        // Check if user already has an active membership
+        if ($user->membership_status === 'active' && $user->membership_expires_at && now()->lt($user->membership_expires_at)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You already have an active membership. Your ' . $user->membership_plan . ' plan expires on ' . \Carbon\Carbon::parse($user->membership_expires_at)->format('M d, Y') . '.'
+            ], 422);
         }
 
         // Map plan names to local IDs
@@ -182,10 +192,17 @@ class EsewaController extends Controller
             // Verify local HMAC-SHA256 signature
             $secretKey = config('services.esewa.secret');
             
-            $totalAmount = $decoded['total_amount'];
-            $totalAmountStr = str_replace(',', '', $totalAmount);
-            
-            $message = "total_amount={$totalAmountStr},transaction_uuid={$decoded['transaction_uuid']},product_code={$decoded['product_code']}";
+            // Build signature message from all signed fields
+            $signedFieldNames = $decoded['signed_field_names'] ?? '';
+            $fields = array_map('trim', explode(',', $signedFieldNames));
+            $messageParts = [];
+            foreach ($fields as $field) {
+                if (isset($decoded[$field])) {
+                    $value = $field === 'total_amount' ? str_replace(',', '', $decoded[$field]) : $decoded[$field];
+                    $messageParts[] = "{$field}={$value}";
+                }
+            }
+            $message = implode(',', $messageParts);
             $computedSignature = base64_encode(hash_hmac('sha256', $message, $secretKey, true));
 
             if ($computedSignature !== $decoded['signature']) {
@@ -196,6 +213,9 @@ class EsewaController extends Controller
                 ]);
                 return redirect('http://localhost:3000/pricing?status=failure&message=' . urlencode('Signature verification failed. Potential tampering.'));
             }
+
+            $totalAmount = $decoded['total_amount'];
+            $totalAmountStr = str_replace(',', '', $totalAmount);
 
             // Server-to-server transaction verification
             $verifyUrl = config('services.esewa.verify_url');
@@ -238,11 +258,14 @@ class EsewaController extends Controller
                     $planNames = [1 => 'Day Pass', 2 => 'Pro Member', 3 => 'Elite'];
                     $planName = $planNames[$planId] ?? 'Pro Member';
 
+                    // Day Pass expires in 1 day, others in 1 month
+                    $expiresAt = $planId === 1 ? now()->addDay() : now()->addMonth();
+
                     // Activate User Membership
                     $user->update([
                         'membership_plan' => $planName,
                         'membership_status' => 'active',
-                        'membership_expires_at' => now()->addMonth(),
+                        'membership_expires_at' => $expiresAt,
                     ]);
 
                     // Store details in memberships table
@@ -253,7 +276,7 @@ class EsewaController extends Controller
                             'status' => 'active',
                             'price' => floatval($totalAmountStr),
                             'start_date' => now(),
-                            'end_date' => now()->addMonth(),
+                            'end_date' => $expiresAt,
                         ]
                     );
 
@@ -280,8 +303,25 @@ class EsewaController extends Controller
                         ]);
                     }
 
+                    // Send membership confirmation email
+                    try {
+                        Mail::to($user->email)->send(new MembershipConfirmation(
+                            $user,
+                            $planName,
+                            floatval($totalAmountStr),
+                            now(),
+                            $expiresAt
+                        ));
+                        Log::info("Membership confirmation email sent to {$user->email} for {$planName}");
+                    } catch (\Exception $e) {
+                        Log::error("Failed to send membership confirmation email to {$user->email}: " . $e->getMessage(), [
+                            'exception' => get_class($e),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
+                    }
+
                     $message = urlencode("Welcome to NeonFit! Your {$planName} membership has been activated successfully.");
-                    return redirect("http://localhost:3000/thank-you?status=success&message={$message}&orderId={$decoded['transaction_code']}");
+                    return redirect("http://localhost:3000/thank-you?status=success&type=membership&message={$message}&plan=" . urlencode($planName));
                 }
             }
 
@@ -318,10 +358,18 @@ class EsewaController extends Controller
 
             // Verify local HMAC-SHA256 signature
             $secretKey = config('services.esewa.secret');
-            $totalAmount = $decoded['total_amount'];
-            $totalAmountStr = str_replace(',', '', $totalAmount);
-            
-            $message = "total_amount={$totalAmountStr},transaction_uuid={$decoded['transaction_uuid']},product_code={$decoded['product_code']}";
+
+            // Build signature message from all signed fields
+            $signedFieldNames = $decoded['signed_field_names'] ?? '';
+            $fields = array_map('trim', explode(',', $signedFieldNames));
+            $messageParts = [];
+            foreach ($fields as $field) {
+                if (isset($decoded[$field])) {
+                    $value = $field === 'total_amount' ? str_replace(',', '', $decoded[$field]) : $decoded[$field];
+                    $messageParts[] = "{$field}={$value}";
+                }
+            }
+            $message = implode(',', $messageParts);
             $computedSignature = base64_encode(hash_hmac('sha256', $message, $secretKey, true));
 
             if ($computedSignature !== $decoded['signature']) {
@@ -331,6 +379,9 @@ class EsewaController extends Controller
                 ]);
                 return redirect('http://localhost:3000/checkout?status=failure&message=' . urlencode('Signature verification failed.'));
             }
+
+            $totalAmount = $decoded['total_amount'];
+            $totalAmountStr = str_replace(',', '', $totalAmount);
 
             // Server-to-server transaction verification
             $verifyUrl = config('services.esewa.verify_url');

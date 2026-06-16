@@ -183,13 +183,13 @@ const Navbar = () => {
           <div className="flex items-center justify-between h-20 md:h-24">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 group transition-all duration-300">
-              <div className="relative">
+              <div className="relative w-16 h-16 md:w-24 md:h-24">
+                <span className="absolute inset-0 blur-xl bg-primary/30 scale-0 group-hover:scale-100 transition-transform duration-700 rounded-full z-0" />
                 <img 
                   src="/logo.png" 
                   alt="NeonFit Logo" 
-                  className="w-24 h-24 transition-transform group-hover:scale-110 duration-500 rounded-full object-cover" 
+                  className="relative z-10 w-16 h-16 md:w-24 md:h-24 transition-transform group-hover:scale-110 duration-500 rounded-full object-cover" 
                 />
-                <span className="absolute inset-0 blur-xl bg-primary/30 scale-0 group-hover:scale-100 transition-transform duration-700" />
               </div>
             </Link>
 
@@ -296,13 +296,13 @@ const Navbar = () => {
           </div>
           
           <Link to="/" className="flex items-center gap-3 relative z-10" onClick={() => setIsOpen(false)}>
-            <div className="relative">
+            <div className="relative w-14 h-14">
               <img 
                 src="/logo.png" 
                 alt="NeonFit Logo" 
-                className="w-14 h-14 rounded-full object-cover border-2 border-white/50 shadow-lg" 
+                className="relative z-10 w-14 h-14 rounded-full object-cover border-2 border-white/50 shadow-lg" 
               />
-              <div className="absolute inset-0 rounded-full bg-white/20 blur-md"></div>
+              <div className="absolute inset-0 rounded-full bg-white/20 blur-md z-0"></div>
             </div>
             <span className="text-2xl font-black text-white drop-shadow-lg">
               NEON<span className="text-white/90">FIT</span>

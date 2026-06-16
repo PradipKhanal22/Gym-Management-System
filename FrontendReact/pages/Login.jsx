@@ -118,7 +118,7 @@ const Login = () => {
             </div>
 
             <div className="flex justify-center">
-              <Button type="submit" variant="primary" className="px-8" disabled={loading}>
+              <Button type="submit" variant="primary" className="w-full sm:w-auto px-8" disabled={loading}>
                 {loading ? 'Signing In...' : 'Sign In'}
               </Button>
             </div>

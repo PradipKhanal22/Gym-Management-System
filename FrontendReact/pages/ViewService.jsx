@@ -54,9 +54,9 @@ const ViewService = () => {
   if (loading) {
     return (
       <>
-        <div className="relative h-[60vh] mt-20 flex items-center justify-center overflow-hidden bg-slate-200 animate-pulse"></div>
-        <div className="max-w-7xl mx-auto px-4 py-16">
-          <div className="grid lg:grid-cols-3 gap-12">
+        <div className="relative h-[50vh] sm:h-[60vh] mt-20 flex items-center justify-center overflow-hidden bg-slate-200 animate-pulse"></div>
+        <div className="max-w-7xl mx-auto px-4 py-10 sm:py-16">
+          <div className="grid lg:grid-cols-3 gap-6 lg:gap-12">
             <div className="lg:col-span-2 space-y-4">
               <div className="animate-pulse bg-slate-200 h-96 rounded-3xl"></div>
               <div className="animate-pulse bg-slate-200 h-10 w-3/4 rounded"></div>
@@ -82,7 +82,7 @@ const ViewService = () => {
   if (!service) {
     return (
       <>
-        <div className="relative h-[60vh] mt-20 flex items-center justify-center overflow-hidden">
+        <div className="relative h-[50vh] sm:h-[60vh] mt-20 flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0">
             <img 
               src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=1920&q=80" 
@@ -93,10 +93,10 @@ const ViewService = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent"></div>
           </div>
           <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-            <h1 className="text-5xl md:text-7xl font-black uppercase text-white mb-4" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.5)' }}>
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase text-white mb-4" style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.5)' }}>
               Service Not Found
             </h1>
-            <p className="text-xl text-white font-medium mb-8" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.6)' }}>
+            <p className="text-sm sm:text-base md:text-xl text-white font-medium mb-8" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.6)' }}>
               The service you're looking for doesn't exist.
             </p>
             <Link to="/services" className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-bold rounded-full hover:bg-primary/90 transition-colors">
@@ -115,7 +115,7 @@ const ViewService = () => {
   return (
     <>
       {/* Hero Section - Same as Services Page */}
-      <div className="relative h-[60vh] mt-20 flex items-center justify-center overflow-hidden">
+      <div className="relative h-[50vh] sm:h-[60vh] mt-20 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img 
             src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=1920&q=80" 
@@ -129,7 +129,7 @@ const ViewService = () => {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-black uppercase text-white mb-4"
+            className="text-3xl sm:text-5xl md:text-7xl font-black uppercase text-white mb-4"
             style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.5)' }}
           >
             {service.name}
@@ -138,7 +138,7 @@ const ViewService = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-xl text-white font-medium"
+            className="text-sm sm:text-base md:text-xl text-white font-medium"
             style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.6)' }}
           >
             Comprehensive fitness solutions designed to elevate your performance.
@@ -147,8 +147,8 @@ const ViewService = () => {
       </div>
 
       {/* Service Detail */}
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <div className="grid lg:grid-cols-3 gap-12">
+      <div className="max-w-7xl mx-auto px-4 py-10 sm:py-16">
+        <div className="grid lg:grid-cols-3 gap-6 sm:gap-12">
           {/* Main Content */}
           <motion.div 
             className="lg:col-span-2"
@@ -166,7 +166,7 @@ const ViewService = () => {
             <h2 className="text-3xl md:text-4xl font-black text-slate-900 mt-8">
               {service.name}
             </h2>
-            <p className="text-slate-600 text-lg leading-relaxed mt-4">
+            <p className="text-slate-600 text-sm sm:text-lg leading-relaxed mt-4">
               {service.description || 'No description available for this service.'}
             </p>
           </motion.div>

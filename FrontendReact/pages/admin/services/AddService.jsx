@@ -76,7 +76,7 @@ const AddService = () => {
       <div className="flex-1 lg:ml-64 ml-0">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-slate-200">
-          <div className="px-8 py-6">
+          <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-6">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => navigate('/admin/services')}
@@ -88,7 +88,7 @@ const AddService = () => {
                 <Dumbbell className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-black text-slate-900">Add Service</h1>
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Add Service</h1>
                 <p className="text-slate-600 mt-1">Create a new gym service</p>
               </div>
             </div>
@@ -96,13 +96,13 @@ const AddService = () => {
         </header>
 
         {/* Form */}
-        <div className="p-8">
+        <div className="p-4 sm:p-6 md:p-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="max-w-3xl mx-auto"
           >
-            <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-8 shadow-lg border border-slate-200">
+            <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-200">
               {/* Service Name */}
               <div className="mb-6">
                 <label className="block text-sm font-black text-slate-700 mb-2 uppercase tracking-wider">

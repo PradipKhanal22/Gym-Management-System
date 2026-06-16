@@ -130,7 +130,7 @@ const Register = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Email Address</label>
                 <div className="relative">
@@ -163,7 +163,7 @@ const Register = () => {
               </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Password</label>
                 <div className="relative">
@@ -209,7 +209,7 @@ const Register = () => {
             </div>
 
             <div className="flex justify-center">
-              <Button type="submit" variant="primary" className="px-8" disabled={loading}>
+              <Button type="submit" variant="primary" className="w-full sm:w-auto px-8" disabled={loading}>
                 {loading ? 'Creating Account...' : 'Create Account'}
               </Button>
             </div>

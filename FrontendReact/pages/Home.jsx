@@ -61,7 +61,7 @@ const Home = () => {
   return (
     <>
       {/* Hero - Sliding Image Carousel */}
-      <div className="relative h-[90vh] mt-20 overflow-hidden">
+      <div className="relative h-[50vh] sm:h-[90vh] mt-20 overflow-hidden">
         <AnimatePresence initial={false}>
           <motion.div
             key={currentSlide}
@@ -88,7 +88,7 @@ const Home = () => {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
-                  className="text-5xl md:text-7xl font-black text-white mb-6 uppercase tracking-tight"
+                  className="text-3xl sm:text-5xl md:text-7xl font-black text-white mb-6 uppercase tracking-tight"
                   style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.5)' }}
                 >
                   {heroSlides[currentSlide].title}
@@ -98,7 +98,7 @@ const Home = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-                  className="text-xl md:text-2xl text-white/95 mb-10 font-medium max-w-2xl mx-auto"
+                  className="text-sm sm:text-base md:text-xl text-white/95 mb-10 font-medium max-w-2xl mx-auto"
                   style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.6)' }}
                 >
                   {heroSlides[currentSlide].subtitle}
@@ -110,7 +110,7 @@ const Home = () => {
                   transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
                 >
                   <Link to="/contact">
-                    <Button size="lg" className="bg-gradient-to-r from-primary to-emerald-500 text-white hover:from-primary/90 hover:to-emerald-500/90 px-12 py-6 text-lg font-black shadow-2xl hover:shadow-primary/50 hover:scale-105 transition-all duration-300 rounded-full uppercase tracking-wider">
+                    <Button size="lg" className="bg-gradient-to-r from-primary to-emerald-500 text-white hover:from-primary/90 hover:to-emerald-500/90 px-6 sm:px-10 md:px-12 py-4 sm:py-5 md:py-6 text-base sm:text-lg font-black shadow-2xl hover:shadow-primary/50 hover:scale-105 transition-all duration-300 rounded-full uppercase tracking-wider">
                       {heroSlides[currentSlide].cta}
                       <ArrowRight className="w-6 h-6 ml-2" />
                     </Button>
@@ -154,10 +154,10 @@ const Home = () => {
             <div className="inline-block mb-4">
               <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold uppercase tracking-wider">Why Choose Us</span>
             </div>
-            <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tight text-slate-900 mb-4">
+            <h2 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tight text-slate-900 mb-4">
               Why <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-500 to-primary animate-gradient-x">NeonFit</span>?
             </h2>
-            <p className="mt-6 text-xl text-slate-600 leading-relaxed font-medium">
+            <p className="mt-6 text-sm sm:text-base md:text-xl text-slate-600 leading-relaxed font-medium">
               Designed for those who refuse to settle. Premium everything. No distractions. Just progress.
             </p>
           </motion.div>
@@ -171,7 +171,7 @@ const Home = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.15, duration: 0.6 }}
               viewport={{ once: true }}
-              className="group relative bg-white border border-slate-200 rounded-3xl p-10 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden"
+              className="group relative bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden"
             >
               {/* Gradient Overlay on Hover */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-emerald-500/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -186,7 +186,7 @@ const Home = () => {
                   {service.icon === 'Clock' && <Clock className="w-10 h-10 text-white" />}
                 </div>
                 <h3 className="text-2xl font-black text-slate-900 mb-4 group-hover:text-primary transition-colors">{service.title}</h3>
-                <p className="text-slate-600 leading-relaxed text-lg">{service.description}</p>
+                <p className="text-slate-600 leading-relaxed text-sm sm:text-lg">{service.description}</p>
               </div>
 
               {/* Bottom Border Animation */}
@@ -197,14 +197,14 @@ const Home = () => {
       </Section>
 
       {/* Stats - Light & Elegant */}
-      <Section className="bg-gradient-to-br from-slate-900 to-primary py-32 relative overflow-hidden">
+      <Section className="bg-gradient-to-br from-slate-900 to-primary py-10 sm:py-24 md:py-32 relative overflow-hidden">
         {/* Background Elements */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-20 w-72 h-72 bg-emerald-400 rounded-full blur-3xl"></div>
           <div className="absolute bottom-20 right-20 w-72 h-72 bg-white rounded-full blur-3xl"></div>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 max-w-6xl mx-auto text-center relative z-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 md:gap-12 max-w-6xl mx-auto text-center relative z-10">
           {[
             { value: '50+', label: 'Expert Trainers', icon: <Users className="w-12 h-12" /> },
             { value: '200+', label: 'Premium Machines', icon: <Dumbbell className="w-12 h-12" /> },
@@ -220,7 +220,7 @@ const Home = () => {
               className="group"
             >
               <div className="mb-6 text-emerald-300 group-hover:text-white transition-colors duration-300 group-hover:scale-110 inline-block">{stat.icon}</div>
-              <div className="text-6xl md:text-7xl font-black text-white mb-3 group-hover:scale-110 transition-transform">{stat.value}</div>
+              <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-3 group-hover:scale-110 transition-transform">{stat.value}</div>
               <div className="text-sm font-bold text-emerald-100 uppercase tracking-widest">{stat.label}</div>
             </motion.div>
           ))}
@@ -229,17 +229,17 @@ const Home = () => {
 
       {/* Gallery + Features */}
       <Section className="bg-gray-50/50">
-        <div className="grid lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl md:text-6xl font-black text-gray-900 mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-gray-900 mb-6">
               Built for <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">Performance</span>
             </h2>
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+            <p className="text-sm sm:text-lg text-gray-600 mb-8 leading-relaxed">
               Every detail crafted with intention. From competition-grade platforms to recovery zones that actually work.
             </p>
             <ul className="space-y-5 mb-10">
@@ -264,7 +264,7 @@ const Home = () => {
             </Link>
           </motion.div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-2 sm:gap-4">
             {galleryImages.map((src, i) => (
               <motion.div
                 key={i}
@@ -289,10 +289,10 @@ const Home = () => {
       {/* Testimonials - Minimal & Trustworthy */}
       <Section className="bg-white">
         <div className="text-center mb-4">
-          <h2 className="text-4xl md:text-6xl font-black text-gray-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-gray-900 mb-4">
             Real People.<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">Real Results.</span>
           </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">Join thousands who've transformed their bodies and minds.</p>
+          <p className="text-gray-600 text-sm sm:text-lg max-w-2xl mx-auto">Join thousands who've transformed their bodies and minds.</p>
         </div>
 
         <div className="relative max-w-6xl mx-auto overflow-hidden">
@@ -313,14 +313,14 @@ const Home = () => {
             {[...testimonials, ...testimonials].map((t, idx) => (
               <div
                 key={`${t.id}-${idx}`}
-                className="flex-shrink-0 w-full md:w-[calc(33.333%-1.5rem)] bg-gray-50/70 border border-gray-200/50 rounded-3xl p-8 hover:border-gray-300 transition-all"
+                className="flex-shrink-0 w-full md:w-[calc(33.333%-1.5rem)] bg-gray-50/70 border border-gray-200/50 rounded-3xl p-6 sm:p-8 hover:border-gray-300 transition-all"
               >
                 <div className="flex gap-1 mb-5">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className={`w-5 h-5 ${i < t.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
                   ))}
                 </div>
-                <p className="text-gray-700 italic text-lg leading-relaxed mb-8">"{t.text}"</p>
+                <p className="text-gray-700 italic text-sm sm:text-lg leading-relaxed mb-8">"{t.text}"</p>
                 <div className="flex items-center gap-4">
                   <img src={t.image} alt={t.name} className="w-14 h-14 rounded-full ring-4 ring-white shadow-lg" />
                   <div>
@@ -345,7 +345,7 @@ const Home = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-br from-primary via-emerald-500 to-primary rounded-3xl p-12 md:p-16 shadow-2xl"
+            className="bg-gradient-to-br from-primary via-emerald-500 to-primary rounded-3xl p-6 sm:p-10 md:p-16 shadow-2xl"
           >
             <div className="text-center">
               <motion.h2
@@ -362,7 +362,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
                 viewport={{ once: true }}
-                className="text-lg text-white/90 mb-8 max-w-2xl mx-auto"
+                className="text-sm sm:text-lg text-white/90 mb-8 max-w-2xl mx-auto"
               >
                 Join thousands of members who've achieved their fitness goals with NeonFit.
               </motion.p>

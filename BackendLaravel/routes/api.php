@@ -64,6 +64,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/orders', [OrderController::class, 'getAllOrders']);
     Route::put('/admin/orders/{id}/status', [OrderController::class, 'updateStatus']);
 
+    // Membership Routes
+    Route::get('/membership/status', [MembershipController::class, 'status']);
+
     // Admin Membership Routes
     Route::get('/admin/memberships', [MembershipController::class, 'index']);
 

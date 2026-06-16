@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Sidebar from '../Sidebar';
 import { categoryAPI } from '../../../src/constant/api/categoryAPI';
 import { toast } from '../../../components/Toast';
-import { FolderOpen, ArrowLeft } from 'lucide-react';
+import { Tag, ArrowLeft } from 'lucide-react';
 
 const EditCategory = () => {
   const navigate = useNavigate();
@@ -89,7 +89,7 @@ const EditCategory = () => {
       <div className="flex-1 lg:ml-64 ml-0">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-slate-200">
-          <div className="px-8 py-6">
+          <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-6">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => navigate('/admin/categories')}
@@ -98,10 +98,10 @@ const EditCategory = () => {
                 <ArrowLeft className="w-5 h-5 text-slate-600" />
               </button>
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-emerald-500 flex items-center justify-center">
-                <FolderOpen className="w-5 h-5 text-white" />
+                <Tag className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-black text-slate-900">Edit Category</h1>
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Edit Category</h1>
                 <p className="text-slate-600 mt-1">Update category details</p>
               </div>
             </div>
@@ -109,13 +109,13 @@ const EditCategory = () => {
         </header>
 
         {/* Form */}
-        <div className="p-8">
+        <div className="p-4 sm:p-6 md:p-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="max-w-3xl mx-auto"
           >
-            <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-8 shadow-lg border border-slate-200">
+            <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-200">
               {/* Category Name */}
               <div className="mb-6">
                 <label className="block text-sm font-black text-slate-700 mb-2 uppercase tracking-wider">

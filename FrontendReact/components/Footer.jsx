@@ -22,8 +22,8 @@ const Footer = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-slate-900/95 to-black/80" />
       <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
 
-      <div className="relative container mx-auto px-6 py-20 z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+      <div className="relative container mx-auto px-6 py-12 sm:py-20 z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 lg:gap-16">
           {/* Brand */}
           <div className="space-y-8">
             <Link to="/" className="flex items-center gap-3 group">

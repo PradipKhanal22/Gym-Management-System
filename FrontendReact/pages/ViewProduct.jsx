@@ -108,9 +108,9 @@ const ViewProduct = () => {
 
   if (loading) {
     return (
-      <Section className="bg-white py-16 mt-20">
+      <Section className="bg-white py-10 sm:py-16 mt-20">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-12">
             <div className="space-y-4">
               <div className="animate-pulse bg-slate-200 aspect-square rounded-3xl"></div>
               <div className="grid grid-cols-3 gap-4">
@@ -134,7 +134,7 @@ const ViewProduct = () => {
 
   if (!product) {
     return (
-      <Section className="bg-white py-16 mt-20">
+      <Section className="bg-white py-10 sm:py-16 mt-20">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-3xl font-black text-slate-900 mb-4">Product Not Found</h2>
           <p className="text-slate-600 mb-8">The product you're looking for doesn't exist.</p>
@@ -153,7 +153,7 @@ const ViewProduct = () => {
   return (
     <>
       {/* Product Details */}
-      <Section className="bg-white py-16 mt-20">
+      <Section className="bg-white py-10 sm:py-16 mt-20">
         <div className="max-w-7xl mx-auto">
           {/* Breadcrumb */}
           <motion.div
@@ -168,7 +168,7 @@ const ViewProduct = () => {
             <span className="text-slate-900 font-semibold">{product?.name || 'Product'}</span>
           </motion.div>
 
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid lg:grid-cols-2 gap-6 sm:gap-12">
             {/* Image Gallery */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
@@ -222,7 +222,7 @@ const ViewProduct = () => {
               </div>
 
               {/* Product Name */}
-              <h1 className="text-4xl md:text-5xl font-black text-slate-900">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900">
                 {product.name}
               </h1>
 
@@ -247,20 +247,20 @@ const ViewProduct = () => {
 
               {/* Price */}
               <div className="py-6 border-y border-slate-200">
-                <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">
+                <div className="text-3xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">
                   Rs. {parseFloat(product.price).toFixed(2)}
                 </div>
               </div>
 
               {/* Description */}
-              <p className="text-slate-600 text-lg leading-relaxed">
+              <p className="text-slate-600 text-sm sm:text-lg leading-relaxed">
                 {product.description || 'No description available for this product.'}
               </p>
 
               {/* Key Features - Placeholder if not available */}
               <div className="bg-slate-50 rounded-2xl p-6">
                 <h3 className="text-lg font-black text-slate-900 mb-4">Key Features</h3>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {['Premium Quality', 'Fast Delivery', 'Best Price', 'Money Back Guarantee'].map((feature, index) => (
                     <div key={index} className="flex items-center gap-2 text-slate-700">
                       <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />
@@ -305,7 +305,7 @@ const ViewProduct = () => {
               </div>
 
               {/* Trust Badges */}
-              <div className="grid grid-cols-3 gap-4 pt-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6">
                 {[
                   { icon: <Shield />, text: 'Authentic Products' },
                   { icon: <Truck />, text: 'Free Shipping' },
@@ -341,7 +341,7 @@ const ViewProduct = () => {
               Product <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Specifications</span>
             </h2>
 
-            <div className="bg-white rounded-3xl p-8 shadow-lg border border-slate-200">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-200">
               <div className="grid md:grid-cols-2 gap-6">
                 Specifications would go here
               </div>
@@ -351,7 +351,7 @@ const ViewProduct = () => {
       </Section> */}
 
       {/* Related Products */}
-      <Section className="bg-white py-16">
+      <Section className="bg-white py-10 sm:py-16">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -364,12 +364,12 @@ const ViewProduct = () => {
                   You May Also Like
                 </span>
               </div>
-              <h2 className="text-4xl font-black text-slate-900 mb-4">
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-4">
                 Related <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Products</span>
               </h2>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
               {loadingRelated ? (
                 // Loading skeleton for related products
                 [...Array(3)].map((_, idx) => (

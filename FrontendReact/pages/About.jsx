@@ -45,7 +45,7 @@ const About = () => {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative h-[60vh] mt-20 flex items-center justify-center overflow-hidden">
+      <div className="relative h-[50vh] sm:h-[60vh] mt-20 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img 
             src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&q=80" 
@@ -55,11 +55,11 @@ const About = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-slate-900/60 via-primary/30 to-slate-900/60"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent"></div>
         </div>
-        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-black uppercase text-white mb-4"
+            className="text-3xl sm:text-5xl md:text-7xl font-black uppercase text-white mb-4"
             style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.5)' }}
           >
             Who We Are
@@ -68,7 +68,7 @@ const About = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-xl text-white font-medium"
+            className="text-sm sm:text-base md:text-xl text-white font-medium"
             style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.6)' }}
           >
             More than a gym. We are a movement dedicated to physical excellence.
@@ -77,8 +77,8 @@ const About = () => {
       </div>
       
       {/* Story Section */}
-      <Section className="bg-white py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
+      <Section className="bg-white py-10 sm:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-12 items-center max-w-7xl mx-auto px-4">
           <motion.div 
             className="relative"
             initial={{ opacity: 0, x: -30 }}
@@ -100,13 +100,13 @@ const About = () => {
             <div className="inline-block mb-4">
               <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold uppercase tracking-wider">Our Story</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-slate-900 mb-6">
               Built for the <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Dedicated</span>
             </h2>
-            <p className="text-slate-600 text-lg mb-4 leading-relaxed">
+            <p className="text-slate-600 text-sm sm:text-lg mb-4 leading-relaxed">
               Founded in 2023, NeonFit was created to bridge the gap between high-performance athletic training and the commercial gym experience. We believe that everyone deserves access to professional-grade equipment and coaching, regardless of their fitness level.
             </p>
-            <p className="text-slate-600 text-lg mb-6 leading-relaxed">
+            <p className="text-slate-600 text-sm sm:text-lg mb-6 leading-relaxed">
               Our 15,000 sq ft facility is designed to inspire. From the ambient lighting to the strategic equipment layout, every detail serves a purpose: to help you focus, push harder, and achieve more than you thought possible.
             </p>
 
@@ -134,12 +134,12 @@ const About = () => {
       </Section>
 
       {/* Achievements */}
-      <Section className="bg-gradient-to-br from-slate-900 to-primary py-16 relative overflow-hidden">
+      <Section className="bg-gradient-to-br from-slate-900 to-primary py-10 sm:py-16 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-72 h-72 bg-emerald-400 rounded-full blur-3xl"></div>
           <div className="absolute bottom-10 right-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl mx-auto relative z-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 max-w-6xl mx-auto px-4 relative z-10">
           {achievements.map((item, i) => (
             <motion.div
               key={i}
@@ -150,7 +150,7 @@ const About = () => {
               className="text-center group"
             >
               <div className="text-emerald-300 mb-4 flex justify-center group-hover:text-white transition-colors group-hover:scale-110 transform duration-300">{item.icon}</div>
-              <div className="text-4xl md:text-5xl font-black text-white mb-2 group-hover:scale-110 transition-transform">{item.number}</div>
+              <div className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-2 group-hover:scale-110 transition-transform">{item.number}</div>
               <div className="text-emerald-100 uppercase text-sm tracking-wider font-bold">{item.label}</div>
             </motion.div>
           ))}
@@ -158,7 +158,7 @@ const About = () => {
       </Section>
 
       {/* Core Values */}
-      <Section className="bg-gradient-to-b from-white via-slate-50 to-white py-16 relative overflow-hidden">
+      <Section className="bg-gradient-to-b from-white via-slate-50 to-white py-10 sm:py-16 relative overflow-hidden">
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-emerald-400/5 rounded-full blur-3xl"></div>
         
@@ -171,13 +171,13 @@ const About = () => {
             <div className="inline-block mb-4">
               <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold uppercase tracking-wider">What Drives Us</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-slate-900 mb-4">
               Core <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Values</span>
             </h2>
-            <p className="text-slate-600 text-lg max-w-2xl mx-auto">The pillars that define our culture and drive our commitment to excellence.</p>
+            <p className="text-slate-600 text-sm sm:text-lg max-w-2xl mx-auto">The pillars that define our culture and drive our commitment to excellence.</p>
           </motion.div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-7xl mx-auto px-4 relative z-10">
           {values.map((v, i) => (
             <motion.div 
               key={i} 
@@ -185,7 +185,7 @@ const About = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
               viewport={{ once: true }}
-              className="bg-white p-8 rounded-3xl border border-slate-200 text-center hover:border-primary transition-all hover:-translate-y-2 hover:shadow-2xl group"
+              className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 text-center hover:border-primary transition-all hover:-translate-y-2 hover:shadow-2xl group"
             >
               <div className="w-16 h-16 mx-auto bg-gradient-to-br from-primary to-emerald-500 rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg shadow-primary/20">
                 {v.icon}
@@ -199,7 +199,7 @@ const About = () => {
       </Section>
 
       {/* Team Section */}
-      <Section className="relative py-20 overflow-hidden">
+      <Section className="relative py-12 sm:py-20 overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
           <img 
@@ -217,7 +217,7 @@ const About = () => {
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-emerald-400 rounded-full blur-3xl"></div>
         </div>
 
-        <div className="text-center mb-16 relative z-10">
+        <div className="text-center mb-8 sm:mb-16 relative z-10 px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -226,14 +226,14 @@ const About = () => {
             <div className="inline-block mb-4">
               <span className="px-4 py-2 bg-primary/20 text-primary rounded-full text-sm font-bold uppercase tracking-wider">Expert Coaches</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white mb-4">
               Meet The <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Trainers</span>
             </h2>
-            <p className="text-slate-300 text-lg max-w-2xl mx-auto">Expert guidance from certified professionals who practice what they preach and are passionate about your success.</p>
+            <p className="text-slate-300 text-sm sm:text-lg max-w-2xl mx-auto">Expert guidance from certified professionals who practice what they preach and are passionate about your success.</p>
           </motion.div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-[1200px] mx-auto px-6 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 max-w-[1200px] mx-auto px-6 relative z-10">
           {loading ? (
             // Loading skeleton
             [...Array(3)].map((_, idx) => (
@@ -301,8 +301,8 @@ const About = () => {
               </Section>
 
       {/* Why Choose Us Section */}
-      <Section className="bg-gradient-to-b from-slate-50 to-white py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
+      <Section className="bg-gradient-to-b from-slate-50 to-white py-10 sm:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -311,10 +311,10 @@ const About = () => {
             <div className="inline-block mb-4">
               <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold uppercase tracking-wider">Why NeonFit</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-slate-900 mb-6">
               Transform Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Fitness Journey</span>
             </h2>
-            <p className="text-slate-600 text-lg mb-6 leading-relaxed">
+            <p className="text-slate-600 text-sm sm:text-lg mb-6 leading-relaxed">
               At NeonFit, we're not just about lifting weights – we're about lifting spirits, building confidence, and creating lasting transformations. Our holistic approach combines cutting-edge equipment, expert coaching, and a supportive community.
             </p>
             <div className="space-y-4">
@@ -350,7 +350,7 @@ const About = () => {
             className="relative"
           >
             <div className="absolute -inset-4 bg-primary/5 rounded-3xl blur-2xl"></div>
-            <div className="relative grid grid-cols-2 gap-4">
+            <div className="relative grid grid-cols-2 gap-2 sm:gap-4">
               <img 
                 src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400&h=500&fit=crop" 
                 alt="Training" 
@@ -367,14 +367,14 @@ const About = () => {
       </Section>
 
       {/* Mission Statement */}
-      <Section className="bg-white py-16">
+      <Section className="bg-white py-10 sm:py-16">
         <motion.div 
-          className="max-w-5xl mx-auto"
+          className="max-w-5xl mx-auto px-4"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <div className="bg-gradient-to-br from-primary via-emerald-500 to-primary rounded-3xl p-12 md:p-16 shadow-2xl relative overflow-hidden">
+          <div className="bg-gradient-to-br from-primary via-emerald-500 to-primary rounded-3xl p-8 sm:p-12 md:p-16 shadow-2xl relative overflow-hidden">
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white rounded-full blur-[150px]"></div>
             </div>
@@ -385,8 +385,8 @@ const About = () => {
                 transition={{ delay: 0.2 }}
                 viewport={{ once: true }}
               >
-                <h2 className="text-3xl md:text-5xl font-black text-white mb-6">Our <span className="text-white/90">Mission</span></h2>
-                <p className="text-white/95 text-xl md:text-2xl leading-relaxed mb-8 max-w-3xl mx-auto">
+                <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white mb-6">Our <span className="text-white/90">Mission</span></h2>
+                <p className="text-white/95 text-base sm:text-xl md:text-2xl leading-relaxed mb-8 max-w-3xl mx-auto">
                   "To empower individuals to reach their full physical potential through world-class facilities, expert coaching, and an inclusive community that celebrates every victory, no matter how small."
                 </p>
                 <Link to="/contact">

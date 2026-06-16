@@ -69,7 +69,7 @@ const Contact = () => {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative h-[60vh] mt-20 flex items-center justify-center overflow-hidden">
+      <div className="relative h-[50vh] sm:h-[60vh] mt-20 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img 
             src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&q=80" 
@@ -83,7 +83,7 @@ const Contact = () => {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-black uppercase text-white mb-4"
+            className="text-3xl sm:text-5xl md:text-7xl font-black uppercase text-white mb-4"
             style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.5)' }}
           >
             Contact Us
@@ -92,7 +92,7 @@ const Contact = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-xl text-white font-medium"
+            className="text-sm sm:text-base md:text-xl text-white font-medium"
             style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.6)' }}
           >
             Get in touch with our team. We are here to help you crush your goals.
@@ -100,8 +100,8 @@ const Contact = () => {
         </div>
       </div>
 
-      <Section className="bg-white py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 max-w-7xl mx-auto">
+      <Section className="bg-white py-10 sm:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 max-w-7xl mx-auto">
           {/* Info */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -111,10 +111,10 @@ const Contact = () => {
             <div className="inline-block mb-4">
               <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold uppercase tracking-wider">Get In Touch</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-6">
               Let's <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Connect</span>
             </h2>
-            <p className="text-slate-600 mb-12 text-lg leading-relaxed">
+            <p className="text-slate-600 mb-12 text-sm sm:text-lg leading-relaxed">
               Have questions about memberships, personal training, or our facility? Drop us a line or visit us in person. Our team is here to support your fitness journey.
             </p>
 
@@ -177,7 +177,7 @@ const Contact = () => {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="bg-white p-10 rounded-3xl border border-slate-200 h-fit shadow-2xl hover:shadow-primary/10 transition-shadow"
+            className="bg-white p-6 sm:p-10 rounded-3xl border border-slate-200 h-fit shadow-2xl hover:shadow-primary/10 transition-shadow"
           >
             <div className="inline-block mb-4">
               <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold uppercase tracking-wider">Message Us</span>
@@ -230,7 +230,7 @@ const Contact = () => {
       </Section>
 
       {/* Map Section */}
-      <Section className="bg-gradient-to-b from-slate-50 to-white py-16">
+      <Section className="bg-gradient-to-b from-slate-50 to-white py-10 sm:py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -240,10 +240,10 @@ const Contact = () => {
           <div className="inline-block mb-4">
             <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold uppercase tracking-wider">Find Us</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-4">
             Visit Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Location</span>
           </h2>
-          <p className="text-slate-600 text-lg max-w-2xl mx-auto">Stop by for a tour, meet our trainers, and see why we're the top choice for fitness enthusiasts.</p>
+          <p className="text-slate-600 text-sm sm:text-lg max-w-2xl mx-auto">Stop by for a tour, meet our trainers, and see why we're the top choice for fitness enthusiasts.</p>
         </motion.div>
         
         <motion.div
@@ -268,20 +268,20 @@ const Contact = () => {
       </Section>
 
       {/* CTA Section */}
-      <Section className="bg-white py-16">
+      <Section className="bg-white py-10 sm:py-16">
         <motion.div 
           className="max-w-5xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <div className="bg-gradient-to-br from-primary via-emerald-500 to-primary rounded-3xl p-12 md:p-16 shadow-2xl relative overflow-hidden">
+          <div className="bg-gradient-to-br from-primary via-emerald-500 to-primary rounded-3xl p-6 sm:p-10 md:p-16 shadow-2xl relative overflow-hidden">
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white rounded-full blur-[150px]"></div>
             </div>
             <div className="text-center relative z-10">
               <h2 className="text-3xl md:text-5xl font-black text-white mb-6">Ready to Transform Your Life?</h2>
-              <p className="text-white/95 text-xl leading-relaxed mb-8 max-w-2xl mx-auto">
+              <p className="text-white/95 text-sm sm:text-base md:text-xl leading-relaxed mb-8 max-w-2xl mx-auto">
                 Join thousands who have already started their fitness journey with NeonFit. Let's achieve greatness together.
               </p>
               <Button variant="secondary" className="bg-white text-primary hover:bg-gray-50 shadow-xl">Start Your Free Trial</Button>

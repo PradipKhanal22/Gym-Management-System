@@ -162,7 +162,10 @@ class OrderController extends Controller
                 Log::info("Order confirmation email sent successfully to {$order->email} for order #{$order->id}");
             } catch (\Exception $e) {
                 // Log error but don't fail the order
-                Log::error("Failed to send order confirmation email: " . $e->getMessage());
+                Log::error("Failed to send order confirmation email to {$order->email} for order #{$order->id}: " . $e->getMessage(), [
+                    'exception' => get_class($e),
+                    'trace' => $e->getTraceAsString(),
+                ]);
             }
 
             return response()->json([
@@ -257,7 +260,10 @@ class OrderController extends Controller
             Log::info("Order status update email sent successfully to {$order->email} for order #{$order->id}");
         } catch (\Exception $e) {
             // Log error but don't fail the status update
-            Log::error("Failed to send order status update email: " . $e->getMessage());
+            Log::error("Failed to send order status update email to {$order->email} for order #{$order->id}: " . $e->getMessage(), [
+                'exception' => get_class($e),
+                'trace' => $e->getTraceAsString(),
+            ]);
         }
 
         return response()->json([

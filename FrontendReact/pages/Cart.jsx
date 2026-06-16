@@ -58,7 +58,7 @@ const Cart = () => {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative h-[50vh] mt-20 flex items-center justify-center overflow-hidden">
+      <div className="relative h-[40vh] sm:h-[50vh] mt-20 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img 
             src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&q=80" 
@@ -80,7 +80,7 @@ const Cart = () => {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-black uppercase text-white mb-4"
+            className="text-3xl sm:text-5xl md:text-7xl font-black uppercase text-white mb-4"
             style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.5)' }}
           >
             Shopping Cart
@@ -89,7 +89,7 @@ const Cart = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-xl text-white font-medium"
+            className="text-sm sm:text-base md:text-xl text-white font-medium"
             style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.6)' }}
           >
             {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} ready for checkout
@@ -115,7 +115,7 @@ const Cart = () => {
 
       {cartItems.length === 0 ? (
         /* Empty Cart */
-        <Section className="bg-white py-16">
+        <Section className="bg-white py-10 sm:py-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -124,8 +124,8 @@ const Cart = () => {
             <div className="w-32 h-32 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-8">
               <ShoppingBag className="w-16 h-16 text-slate-400" />
             </div>
-            <h2 className="text-4xl font-black text-slate-900 mb-4">Your Cart is Empty</h2>
-            <p className="text-slate-600 text-lg mb-8">Start adding products to fuel your fitness journey!</p>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-4">Your Cart is Empty</h2>
+            <p className="text-slate-600 text-sm sm:text-lg mb-8">Start adding products to fuel your fitness journey!</p>
             <Link to="/products">
               <Button size="lg" className="bg-gradient-to-r from-primary to-emerald-500 text-white shadow-lg">
                 Shop Now <ArrowRight className="ml-2 w-5 h-5" />
@@ -134,7 +134,7 @@ const Cart = () => {
           </motion.div>
         </Section>
       ) : (
-        <Section className="bg-gradient-to-b from-slate-50 to-white py-16">
+        <Section className="bg-gradient-to-b from-slate-50 to-white py-10 sm:py-16">
           <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {/* Cart Items */}
             <div className="lg:col-span-2 space-y-4">
@@ -150,9 +150,9 @@ const Cart = () => {
                   transition={{ delay: index * 0.1 }}
                   className="bg-white rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all border border-slate-200 group"
                 >
-                  <div className="flex gap-6 items-center">
+                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center">
                     {/* Image */}
-                    <div className="relative w-28 h-28 rounded-2xl overflow-hidden shrink-0 shadow-md">
+                    <div className="relative w-full h-40 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0 shadow-md">
                       <img 
                         src={item.product.photo_path ? `http://localhost:8000/storage/${item.product.photo_path}` : 'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=400&h=400&fit=crop'} 
                         alt={item.product.name}
@@ -216,7 +216,7 @@ const Cart = () => {
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="bg-white rounded-3xl p-8 shadow-2xl border border-slate-200 sticky top-24"
+                className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 sticky top-24"
               >
                 <div className="inline-block mb-6">
                   <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold uppercase tracking-wider">Order Summary</span>

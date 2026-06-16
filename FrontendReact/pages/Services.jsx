@@ -39,7 +39,7 @@ const Services = () => {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative h-[60vh] mt-20 flex items-center justify-center overflow-hidden">
+      <div className="relative h-[50vh] sm:h-[60vh] mt-20 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img 
             src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=1920&q=80" 
@@ -53,7 +53,7 @@ const Services = () => {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-black uppercase text-white mb-4"
+            className="text-3xl sm:text-5xl md:text-7xl font-black uppercase text-white mb-4"
             style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.5)' }}
           >
             Our Services
@@ -62,7 +62,7 @@ const Services = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-xl text-white font-medium"
+            className="text-sm sm:text-base md:text-xl text-white font-medium"
             style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.6)' }}
           >
             Comprehensive fitness solutions designed to elevate your performance.
@@ -71,7 +71,7 @@ const Services = () => {
       </div>
       
       {/* Training Programs */}
-      <Section className="bg-white py-16">
+      <Section className="bg-white py-10 sm:py-16">
         <div className="text-center mb-12 max-w-7xl mx-auto">
            <motion.div
              initial={{ opacity: 0, y: 20 }}
@@ -81,10 +81,10 @@ const Services = () => {
              <div className="inline-block mb-4">
                <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold uppercase tracking-wider">What We Offer</span>
              </div>
-             <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4">
+             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-4">
                Training <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Programs</span>
              </h2>
-             <p className="text-slate-600 text-lg max-w-2xl mx-auto">Discover our comprehensive range of programs designed to meet your fitness goals, whether you're a beginner or a seasoned athlete.</p>
+              <p className="text-slate-600 text-sm sm:text-lg max-w-2xl mx-auto">Discover our comprehensive range of programs designed to meet your fitness goals, whether you're a beginner or a seasoned athlete.</p>
            </motion.div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
@@ -129,14 +129,14 @@ const Services = () => {
             ))
           ) : (
             <div className="col-span-3 text-center py-12">
-              <p className="text-slate-600 text-lg">No services available at the moment.</p>
+              <p className="text-slate-600 text-sm sm:text-lg">No services available at the moment.</p>
             </div>
           )}
         </div>
       </Section>
 
       {/* Amenities */}
-      <Section className="bg-gradient-to-b from-slate-50 to-white py-16 relative overflow-hidden">
+      <Section className="bg-gradient-to-b from-slate-50 to-white py-10 sm:py-16 relative overflow-hidden">
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-emerald-400/5 rounded-full blur-3xl"></div>
         
@@ -149,10 +149,10 @@ const Services = () => {
             <div className="inline-block mb-4">
               <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold uppercase tracking-wider">Facilities</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-4">
               Premium <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Amenities</span>
             </h2>
-            <p className="text-slate-600 text-lg max-w-2xl mx-auto">Everything you need for a comfortable and convenient workout experience. We've thought of every detail.</p>
+            <p className="text-slate-600 text-sm sm:text-lg max-w-2xl mx-auto">Everything you need for a comfortable and convenient workout experience. We've thought of every detail.</p>
           </motion.div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-7xl mx-auto relative z-10">
@@ -175,8 +175,8 @@ const Services = () => {
       </Section>
 
       {/* Personal Training CTA */}
-      <Section className="bg-white py-16">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 max-w-7xl mx-auto">
+      <Section className="bg-white py-10 sm:py-16">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-12 max-w-7xl mx-auto">
           <motion.div 
             className="lg:w-1/2"
             initial={{ opacity: 0, x: -30 }}
@@ -186,10 +186,10 @@ const Services = () => {
             <div className="inline-block mb-4">
               <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold uppercase tracking-wider">Get Started</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-6">
               Not sure where to <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Start?</span>
             </h2>
-            <p className="text-slate-600 mb-6 text-lg leading-relaxed">
+            <p className="text-slate-600 mb-6 text-sm sm:text-lg leading-relaxed">
               Our expert trainers will create a personalized fitness plan tailored to your goals, fitness level, and lifestyle. Whether you want to build muscle, lose weight, or improve athletic performance, we've got you covered.
             </p>
             <ul className="space-y-3 mb-8">
@@ -230,20 +230,20 @@ const Services = () => {
       </Section>
 
       {/* Call to Action */}
-      <Section className="bg-gradient-to-b from-white to-slate-50 py-16">
+      <Section className="bg-gradient-to-b from-white to-slate-50 py-10 sm:py-16">
         <motion.div 
           className="max-w-5xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <div className="bg-gradient-to-br from-primary via-emerald-500 to-primary rounded-3xl p-12 md:p-16 shadow-2xl relative overflow-hidden">
+          <div className="bg-gradient-to-br from-primary via-emerald-500 to-primary rounded-3xl p-8 sm:p-12 md:p-16 shadow-2xl relative overflow-hidden">
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white rounded-full blur-[150px]"></div>
             </div>
             <div className="text-center relative z-10">
               <h2 className="text-3xl md:text-5xl font-black text-white mb-6">Ready to Start Your Journey?</h2>
-              <p className="text-white/95 text-xl leading-relaxed mb-8 max-w-2xl mx-auto">
+              <p className="text-white/95 text-sm sm:text-base md:text-xl leading-relaxed mb-8 max-w-2xl mx-auto">
                 Join NeonFit today and experience the difference that expert coaching and world-class facilities can make.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

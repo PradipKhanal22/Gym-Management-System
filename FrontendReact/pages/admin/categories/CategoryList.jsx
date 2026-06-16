@@ -65,14 +65,14 @@ const CategoryList = () => {
       <div className="flex-1 lg:ml-64 ml-0">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-slate-200">
-          <div className="px-8 py-6">
-            <div className="flex items-center justify-between">
+          <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-emerald-500 flex items-center justify-center">
-                  <FolderOpen className="w-5 h-5 text-white" />
+                  <Tag className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-black text-slate-900">Categories</h1>
+                  <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Categories</h1>
                   <p className="text-slate-600 mt-1">Manage product categories</p>
                 </div>
               </div>
@@ -88,7 +88,7 @@ const CategoryList = () => {
         </header>
 
         {/* Content */}
-        <div className="p-8">
+        <div className="p-4 sm:p-6 md:p-8">
           {loading ? (
             <div className="flex items-center justify-center h-64">
               <div className="text-lg font-bold text-slate-600">Loading categories...</div>
@@ -109,7 +109,7 @@ const CategoryList = () => {
           ) : (
             <div className="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full min-w-[600px]">
                   <thead>
                     <tr className="border-b border-slate-200 bg-slate-50">
                       <th className="px-6 py-4 text-left text-sm font-black text-slate-700 uppercase tracking-wider">

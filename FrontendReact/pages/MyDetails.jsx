@@ -121,7 +121,7 @@ const MyDetails = () => {
 
   if (!user) {
     return (
-      <Section className="bg-white py-16 mt-20">
+      <Section className="bg-white py-10 sm:py-16 mt-20">
         <div className="max-w-4xl mx-auto text-center">
           <div className="animate-pulse space-y-4">
             <div className="h-32 w-32 bg-slate-200 rounded-full mx-auto"></div>
@@ -221,7 +221,7 @@ const MyDetails = () => {
       </section>
 
       {/* Profile Details Section */}
-      <Section className="bg-gradient-to-b from-white to-slate-50 py-16">
+      <Section className="bg-gradient-to-b from-white to-slate-50 py-10 sm:py-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -287,7 +287,7 @@ const MyDetails = () => {
                   />
                 ) : (
                   <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
-                    <p className="text-lg font-bold text-slate-900">{user.name}</p>
+                    <p className="text-sm sm:text-lg font-bold text-slate-900">{user.name}</p>
                   </div>
                 )}
               </div>
@@ -308,7 +308,7 @@ const MyDetails = () => {
                   />
                 ) : (
                   <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
-                    <p className="text-lg font-bold text-slate-900">{user.email}</p>
+                    <p className="text-sm sm:text-lg font-bold text-slate-900">{user.email}</p>
                   </div>
                 )}
               </div>
@@ -329,7 +329,7 @@ const MyDetails = () => {
                   />
                 ) : (
                   <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
-                    <p className="text-lg font-bold text-slate-900">{user.phone || 'Not provided'}</p>
+                    <p className="text-sm sm:text-lg font-bold text-slate-900">{user.phone || 'Not provided'}</p>
                   </div>
                 )}
               </div>

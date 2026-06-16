@@ -22,7 +22,7 @@ const Hero = ({ title, subtitle, backgroundImage, showCta = true }) => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-5xl md:text-7xl lg:text-8xl font-black uppercase italic tracking-tighter mb-4"
+          className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black uppercase italic tracking-tighter mb-4"
         >
           {title.split(' ').map((word, i) => (
              <span key={i} className={i % 2 !== 0 ? "text-primary" : "text-slate-800"}>{word} </span>

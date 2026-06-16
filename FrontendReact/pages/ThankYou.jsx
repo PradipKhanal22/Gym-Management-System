@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { CheckCircle2, Home, Package, Frown } from 'lucide-react';
+import { CheckCircle2, Home, Package, Frown, Crown } from 'lucide-react';
+import { toast } from '../components/Toast';
 
 const ThankYou = () => {
   const navigate = useNavigate();
@@ -15,17 +16,24 @@ const ThankYou = () => {
     const status = query.get('status');
     const message = query.get('message');
     const orderId = query.get('orderId');
+    const type = query.get('type');
+    const plan = query.get('plan');
 
     if (location.state && location.state.success) {
       setHasSuccess(true);
       setOrderData(location.state);
+      toast.success(location.state.message || 'Success!');
     } else if (status === 'success') {
       setHasSuccess(true);
+      const decodedMessage = message ? decodeURIComponent(message) : 'Payment processed successfully!';
       setOrderData({
         success: true,
-        message: message ? decodeURIComponent(message) : 'Payment processed successfully!',
+        type: type || 'order',
+        plan: plan || undefined,
+        message: decodedMessage,
         orderId: orderId || undefined
       });
+      toast.success(decodedMessage);
     } else {
       setHasSuccess(false);
     }
@@ -34,11 +42,11 @@ const ThankYou = () => {
   if (!hasSuccess) {
     // No success session - user accessed directly
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-white px-4 py-20 mt-20">
+      <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-white px-4 py-12 sm:py-20 mt-20">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-3xl w-full mx-auto bg-white rounded-2xl shadow-2xl p-12 text-center"
+          className="max-w-3xl w-full mx-auto bg-white rounded-2xl shadow-2xl p-6 sm:p-12 text-center"
         >
           {/* Sad Icon */}
           <div className="flex justify-center mb-8">
@@ -65,7 +73,7 @@ const ThankYou = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-slate-600 mb-8 text-xl"
+            className="text-slate-600 mb-8 text-sm sm:text-lg"
           >
             It seems you've reached this page by mistake. No order was placed.
           </motion.p>
@@ -89,13 +97,13 @@ const ThankYou = () => {
 
   // Success view
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-white px-4 py-20 mt-20">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-white px-4 py-12 sm:py-20 mt-20">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         className="max-w-4xl w-full mx-auto"
       >
-        <div className="bg-white rounded-2xl shadow-2xl p-12 text-center overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-12 text-center overflow-hidden">
           {/* Animated Success Icon */}
           <div className="flex justify-center mb-8">
             <motion.div
@@ -170,7 +178,7 @@ const ThankYou = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
-              className="text-5xl font-bold text-slate-800"
+              className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-800"
             >
               Thank You! 🎉
             </motion.h1>
@@ -181,7 +189,9 @@ const ThankYou = () => {
               transition={{ delay: 1 }}
               className="text-2xl text-slate-600"
             >
-              Your order has been placed successfully!
+              {orderData?.type === 'membership'
+                ? 'Your membership has been activated successfully!'
+                : 'Your order has been placed successfully!'}
             </motion.p>
 
             <motion.div
@@ -191,12 +201,30 @@ const ThankYou = () => {
               className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-6"
             >
               <p className="text-green-800 font-medium text-lg">
-                {orderData?.message || 'Order placed successfully! Thank you for your purchase.'}
+                {orderData?.message || (orderData?.type === 'membership'
+                  ? 'Membership activated successfully!'
+                  : 'Order placed successfully! Thank you for your purchase.')}
               </p>
             </motion.div>
 
+            {/* Membership Info */}
+            {orderData?.type === 'membership' && orderData?.plan && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.4 }}
+                className="bg-slate-50 border border-slate-200 rounded-lg p-6 mt-6"
+              >
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <Crown className="w-6 h-6 text-primary" />
+                  <p className="text-base text-slate-600">Membership Plan</p>
+                </div>
+                <p className="text-3xl font-bold text-slate-800 text-center">{orderData.plan}</p>
+              </motion.div>
+            )}
+
             {/* Order Info */}
-            {orderData?.orderId && (
+            {orderData?.type !== 'membership' && orderData?.orderId && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -215,7 +243,7 @@ const ThankYou = () => {
               className="bg-blue-50 border border-blue-200 rounded-lg p-6 mt-6"
             >
               <p className="text-blue-800 text-base">
-                📧 A confirmation email has been sent to your registered email address with all the order details.
+                📧 A confirmation email has been sent to your registered email address with all the details.
               </p>
             </motion.div>
           </div>
@@ -227,12 +255,21 @@ const ThankYou = () => {
             transition={{ delay: 1.8 }}
             className="flex flex-col sm:flex-row gap-4 mt-10"
           >
-            <Link to="/order-history" className="flex-1">
-              <button className="w-full bg-gradient-to-r from-primary to-emerald-500 hover:from-primary/90 hover:to-emerald-600 text-white font-bold py-4 px-8 rounded-lg transition duration-300 transform hover:scale-105 flex items-center justify-center gap-2 text-lg">
-                <Package className="w-6 h-6" />
-                View Orders
-              </button>
-            </Link>
+            {orderData?.type === 'membership' ? (
+              <Link to="/pricing" className="flex-1">
+                <button className="w-full bg-gradient-to-r from-primary to-emerald-500 hover:from-primary/90 hover:to-emerald-600 text-white font-bold py-4 px-8 rounded-lg transition duration-300 transform hover:scale-105 flex items-center justify-center gap-2 text-lg">
+                  <Crown className="w-6 h-6" />
+                  View Membership
+                </button>
+              </Link>
+            ) : (
+              <Link to="/order-history" className="flex-1">
+                <button className="w-full bg-gradient-to-r from-primary to-emerald-500 hover:from-primary/90 hover:to-emerald-600 text-white font-bold py-4 px-8 rounded-lg transition duration-300 transform hover:scale-105 flex items-center justify-center gap-2 text-lg">
+                  <Package className="w-6 h-6" />
+                  View Orders
+                </button>
+              </Link>
+            )}
             
             <Link to="/" className="flex-1">
               <button className="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-4 px-8 rounded-lg transition duration-300 transform hover:scale-105 flex items-center justify-center gap-2 text-lg">

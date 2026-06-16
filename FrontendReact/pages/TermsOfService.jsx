@@ -189,7 +189,7 @@ const TermsOfService = () => {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative h-[55vh] mt-20 flex items-center justify-center overflow-hidden">
+      <div className="relative h-[40vh] sm:h-[55vh] mt-20 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img 
             src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1920&q=80" 
@@ -213,7 +213,7 @@ const TermsOfService = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-black uppercase text-white mb-4"
+            className="text-3xl sm:text-5xl md:text-7xl font-black uppercase text-white mb-4"
             style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.5)' }}
           >
             Terms of Service
@@ -222,7 +222,7 @@ const TermsOfService = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-xl text-white font-medium"
+            className="text-sm sm:text-base md:text-xl text-white font-medium"
             style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.6)' }}
           >
             Please read these terms carefully before using our services
@@ -231,7 +231,7 @@ const TermsOfService = () => {
       </div>
 
       {/* Content Section */}
-      <section className="py-20 bg-gradient-to-b from-white via-slate-50 to-white">
+      <section className="py-12 sm:py-20 bg-gradient-to-b from-white via-slate-50 to-white">
         <div className="container mx-auto px-6 max-w-5xl">
           {/* Introduction */}
           <motion.div

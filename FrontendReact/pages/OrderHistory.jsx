@@ -97,7 +97,7 @@ const OrderHistory = () => {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-6xl font-black uppercase text-white mb-4"
+            className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-white mb-4"
             style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.5)' }}
           >
             Order History
@@ -106,7 +106,7 @@ const OrderHistory = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-lg text-white font-medium"
+            className="text-sm sm:text-lg text-white font-medium"
             style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.6)' }}
           >
             Track your orders and view past purchases
@@ -114,26 +114,26 @@ const OrderHistory = () => {
         </div>
       </div>
 
-      <Section className="bg-gradient-to-b from-slate-50 to-white py-16">
+      <Section className="bg-gradient-to-b from-slate-50 to-white py-10 sm:py-16">
         <div className="max-w-6xl mx-auto">
           {loading ? (
             <div className="flex items-center justify-center h-64">
               <div className="text-center">
                 <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary mb-4"></div>
-                <p className="text-lg font-bold text-slate-600">Loading your orders...</p>
+                <p className="text-sm sm:text-lg font-bold text-slate-600">Loading your orders...</p>
               </div>
             </div>
           ) : orders.length === 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center max-w-2xl mx-auto bg-white rounded-3xl p-12 shadow-lg border border-slate-200"
+              className="text-center max-w-2xl mx-auto bg-white rounded-3xl p-6 sm:p-12 shadow-lg border border-slate-200"
             >
               <div className="w-32 h-32 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-8">
                 <Package className="w-16 h-16 text-slate-400" />
               </div>
-              <h2 className="text-4xl font-black text-slate-900 mb-4">No Orders Yet</h2>
-              <p className="text-slate-600 text-lg mb-8">Start shopping to see your order history here!</p>
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-4">No Orders Yet</h2>
+              <p className="text-slate-600 text-sm sm:text-lg mb-8">Start shopping to see your order history here!</p>
               <button
                 onClick={() => navigate('/products')}
                 className="px-8 py-3 bg-gradient-to-r from-primary to-emerald-500 text-white rounded-xl font-black hover:shadow-xl transition-all"
@@ -189,7 +189,7 @@ const OrderHistory = () => {
                     </div>
                   </div>
 
-                  <div className="p-8">
+                  <div className="p-6 sm:p-8">
                     <div className="grid md:grid-cols-2 gap-6 mb-6">
                       <div>
                         <h4 className="text-sm font-black text-slate-500 uppercase tracking-wider mb-3">Delivery Information</h4>
@@ -243,7 +243,7 @@ const OrderHistory = () => {
             className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
           >
             {/* Modal Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-primary to-emerald-500 px-8 py-6 rounded-t-3xl z-10">
+            <div className="sticky top-0 bg-gradient-to-r from-primary to-emerald-500 px-4 sm:px-8 py-6 rounded-t-3xl z-10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
@@ -264,7 +264,7 @@ const OrderHistory = () => {
             </div>
 
             {/* Modal Content */}
-            <div className="p-8 space-y-6">
+            <div className="p-6 sm:p-8 space-y-6">
               {/* Order Status */}
               <div className="bg-gradient-to-br from-slate-50 to-white rounded-2xl p-6 border-2 border-slate-200">
                 <div className="flex flex-wrap items-center gap-4">

@@ -70,7 +70,7 @@ const Products = () => {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative h-[60vh] mt-20 flex items-center justify-center overflow-hidden">
+      <div className="relative h-[50vh] sm:h-[60vh] mt-20 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img 
             src="https://images.unsplash.com/photo-1556817411-31ae72fa3ea0?w=1920&q=80" 
@@ -84,7 +84,7 @@ const Products = () => {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-black uppercase text-white mb-4"
+            className="text-3xl sm:text-5xl md:text-7xl font-black uppercase text-white mb-4"
             style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.5)' }}
           >
             Gym Store
@@ -93,7 +93,7 @@ const Products = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-xl text-white font-medium"
+            className="text-sm sm:text-base md:text-xl text-white font-medium"
             style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.6)' }}
           >
             Gear up with premium supplements and apparel.
@@ -102,7 +102,7 @@ const Products = () => {
       </div>
       
       {/* Products Grid */}
-      <Section className="bg-white py-16">
+      <Section className="bg-white py-10 sm:py-16">
         <div className="text-center mb-12 max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -112,10 +112,10 @@ const Products = () => {
             <div className="inline-block mb-4">
               <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold uppercase tracking-wider">Shop Now</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-4">
               Premium <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Products</span>
             </h2>
-            <p className="text-slate-600 text-lg max-w-2xl mx-auto">Fuel your fitness journey with our curated selection of supplements, apparel, and gear.</p>
+            <p className="text-slate-600 text-sm sm:text-lg max-w-2xl mx-auto">Fuel your fitness journey with our curated selection of supplements, apparel, and gear.</p>
           </motion.div>
         </div>
         
@@ -185,15 +185,15 @@ const Products = () => {
               </motion.div>
             ))
           ) : (
-            <div className="col-span-3 text-center py-12">
-              <p className="text-slate-600 text-lg">No products available at the moment.</p>
+            <div className="sm:col-span-2 lg:col-span-3 text-center py-12">
+              <p className="text-slate-600 text-sm sm:text-lg">No products available at the moment.</p>
             </div>
           )}
         </div>
       </Section>
 
       {/* Promotional Banner */}
-      <Section className="bg-gradient-to-b from-white to-slate-50 py-16">
+      <Section className="bg-gradient-to-b from-white to-slate-50 py-10 sm:py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -204,13 +204,13 @@ const Products = () => {
             <img 
               src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&h=400&fit=crop"
               alt="Promo"
-              className="w-full h-[300px] object-cover"
+              className="w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-primary/80 to-slate-900/95"></div>
             <div className="absolute inset-0 flex items-center justify-center text-center px-6">
               <div>
-                <h3 className="text-3xl md:text-5xl font-black text-white mb-4">New Members Get 20% OFF</h3>
-                <p className="text-white/90 text-lg mb-6">Use code <span className="font-bold text-emerald-300">NEONFIT20</span> at checkout</p>
+                <h3 className="text-2xl sm:text-3xl md:text-5xl font-black text-white mb-4">New Members Get 20% OFF</h3>
+                <p className="text-white/90 text-sm sm:text-lg mb-6">Use code <span className="font-bold text-emerald-300">NEONFIT20</span> at checkout</p>
                 <Button variant="secondary" className="bg-white text-primary hover:bg-gray-50 shadow-xl">Shop Now</Button>
               </div>
             </div>

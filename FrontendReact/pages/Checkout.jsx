@@ -151,7 +151,7 @@ const Checkout = () => {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-6xl font-black uppercase text-white mb-4"
+            className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-white mb-4"
             style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.5)' }}
           >
             Secure Checkout 
@@ -160,7 +160,7 @@ const Checkout = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-lg text-white font-medium flex items-center justify-center gap-2"
+            className="text-sm sm:text-lg text-white font-medium flex items-center justify-center gap-2"
             style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.6)' }}
           >
              Secure Payment
@@ -169,14 +169,14 @@ const Checkout = () => {
       </div>
 
       {loading ? (
-        <Section className="bg-gradient-to-b from-slate-50 to-white py-16">
+        <Section className="bg-gradient-to-b from-slate-50 to-white py-10 sm:py-16">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
             <p className="mt-4 text-slate-600 font-semibold">Loading checkout...</p>
           </div>
         </Section>
       ) : cartItems.length === 0 ? (
-        <Section className="bg-gradient-to-b from-slate-50 to-white py-16">
+        <Section className="bg-gradient-to-b from-slate-50 to-white py-10 sm:py-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -185,8 +185,8 @@ const Checkout = () => {
             <div className="w-32 h-32 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-8">
               <ShoppingBag className="w-16 h-16 text-slate-400" />
             </div>
-            <h2 className="text-4xl font-black text-slate-900 mb-4">Your Cart is Empty</h2>
-            <p className="text-slate-600 text-lg mb-8">Add some products to your cart before checking out!</p>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-4">Your Cart is Empty</h2>
+            <p className="text-slate-600 text-sm sm:text-lg mb-8">Add some products to your cart before checking out!</p>
             <Link to="/products">
               <button className="bg-gradient-to-r from-primary to-emerald-500 text-white px-8 py-3 rounded-xl font-black hover:shadow-xl transition-all">
                 Shop Now
@@ -195,7 +195,7 @@ const Checkout = () => {
           </motion.div>
         </Section>
       ) : (
-        <Section className="bg-gradient-to-b from-slate-50 to-white py-16">
+        <Section className="bg-gradient-to-b from-slate-50 to-white py-10 sm:py-16">
           <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {/* Checkout Form */}
           <div className="lg:col-span-2">
@@ -204,7 +204,7 @@ const Checkout = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-3xl p-8 shadow-lg border border-slate-200"
+                className="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-200"
               >
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-emerald-500 flex items-center justify-center shadow-lg">
@@ -213,7 +213,7 @@ const Checkout = () => {
                   <h2 className="text-2xl font-black text-slate-900">Contact Information</h2>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-black text-slate-700 mb-2 uppercase tracking-wider">
                       Full Name
@@ -288,7 +288,7 @@ const Checkout = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-white rounded-3xl p-8 shadow-lg border border-slate-200"
+                className="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-200"
               >
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-emerald-500 flex items-center justify-center shadow-lg">
@@ -354,7 +354,7 @@ const Checkout = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className={`bg-gradient-to-r from-primary to-emerald-500 text-white px-12 py-4 rounded-xl font-black text-lg hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 flex items-center justify-center gap-2 w-full max-w-md ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`bg-gradient-to-r from-primary to-emerald-500 text-white px-6 sm:px-12 py-4 rounded-xl font-black text-lg hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 flex items-center justify-center gap-2 w-full max-w-md ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {submitting ? (
                     <>
@@ -374,7 +374,7 @@ const Checkout = () => {
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white rounded-3xl p-8 shadow-2xl border border-slate-200 sticky top-24"
+              className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 sticky top-24"
             >
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-emerald-500 flex items-center justify-center">
