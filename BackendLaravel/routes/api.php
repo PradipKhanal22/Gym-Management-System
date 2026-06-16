@@ -74,6 +74,8 @@ Route::middleware('auth:sanctum')->group(function () {
 // eSewa Public Callback Routes
 Route::get('/esewa/success', [EsewaController::class, 'success'])->name('esewa.success');
 Route::get('/esewa/failure', [EsewaController::class, 'failure'])->name('esewa.failure');
+Route::get('/esewa/order/success', [EsewaController::class, 'orderSuccess'])->name('esewa.order.success');
+Route::get('/esewa/order/failure', [EsewaController::class, 'orderFailure'])->name('esewa.order.failure');
 
 // Admin Contact Messages Routes (Protected)
 Route::middleware('auth:sanctum')->group(function () {

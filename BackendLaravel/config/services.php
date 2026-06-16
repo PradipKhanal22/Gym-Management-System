@@ -39,7 +39,7 @@ return [
         'url' => env('ESEWA_URL', 'https://rc-epay.esewa.com.np/api/epay/main/v2/form'),
         'verify_url' => env('ESEWA_VERIFY_URL', 'https://rc-epay.esewa.com.np/api/epay/transaction/status/'),
         'merchant' => env('ESEWA_MERCHANT', 'EPAYTEST'),
-        'secret' => env('ESEWA_SECRET_KEY', '8g8DGWZtE9b0c'),
+        'secret' => env('ESEWA_SECRET_KEY', '8gBm/:&EnhH.1/q'),
     ],
 
 ];

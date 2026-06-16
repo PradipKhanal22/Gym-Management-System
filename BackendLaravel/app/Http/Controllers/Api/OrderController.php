@@ -121,7 +121,7 @@ class OrderController extends Controller
                 'phone' => $request->phone,
                 'address' => $request->address,
                 'payment_method' => $request->payment_method,
-                'payment_status' => $request->payment_method === 'COD' ? 'pending' : 'paid',
+                'payment_status' => 'pending',
                 'order_status' => 'pending',
                 'subtotal' => $request->subtotal,
                 'shipping' => $request->shipping,

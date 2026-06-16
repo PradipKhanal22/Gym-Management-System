@@ -5,6 +5,7 @@ import { CreditCard, Lock, User, Mail, Phone, MapPin, ShoppingBag, CheckCircle2 
 import { Link, useNavigate } from 'react-router-dom';
 import { getCart } from '../src/constant/cartUtils';
 import { orderAPI } from '../src/constant/api/orderAPI';
+import { esewaAPI, redirectToEsewa } from '../src/constant/api/esewaAPI';
 import { toast } from '../components/Toast';
 
 const Checkout = () => {
@@ -62,12 +63,6 @@ const Checkout = () => {
       return;
     }
 
-    if (paymentMethod === 'Esewa') {
-      toast.error('Esewa payment integration coming soon!');
-      return;
-    }
-
-    // Handle Cash on Delivery
     setSubmitting(true);
     try {
       const orderData = {
@@ -86,7 +81,19 @@ const Checkout = () => {
       const response = await orderAPI.create(orderData);
 
       if (response.success) {
-        // Clear form
+        const orderId = response.data?.id;
+
+        if (paymentMethod === 'Esewa') {
+          const esewaResponse = await esewaAPI.payOrder(orderId, total);
+
+          if (esewaResponse.url && esewaResponse.params) {
+            redirectToEsewa(esewaResponse.url, esewaResponse.params);
+          } else {
+            toast.error(esewaResponse.message || 'Failed to initiate eSewa payment.');
+          }
+          return;
+        }
+
         setFormData({
           firstName: '',
           lastName: '',
@@ -94,12 +101,11 @@ const Checkout = () => {
           phone: '',
           address: ''
         });
-        // Redirect to thank you page with success state
         navigate('/thank-you', {
           state: {
             success: true,
             message: 'Order placed successfully! Thank you for your purchase.',
-            orderId: response.data?.id
+            orderId: orderId
           }
         });
       } else {
