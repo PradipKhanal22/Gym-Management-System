@@ -68,7 +68,7 @@ const ProductList = () => {
   return (
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
-      <div className="flex-1 lg:ml-64 ml-0">
+      <div className="flex-1 lg:ml-64 ml-0 overflow-hidden">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-slate-200">
           <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-6">

@@ -12,6 +12,7 @@ use App\Models\Payment;
 use App\Models\Membership;
 use App\Models\Order;
 use App\Mail\MembershipConfirmation;
+use App\Mail\OrderConfirmation;
 
 class EsewaController extends Controller
 {
@@ -421,6 +422,9 @@ class EsewaController extends Controller
 
                     Log::info('Order payment confirmed via eSewa', ['order_id' => $order->id]);
 
+                    // Load order with items for email
+                    $order->load('orderItems.product');
+
                     // Update payment record
                     $payment = Payment::where('transaction_uuid', $decoded['transaction_uuid'])->first();
                     if ($payment) {
@@ -439,6 +443,17 @@ class EsewaController extends Controller
                             'status' => 'completed',
                             'esewa_transaction_code' => $decoded['transaction_code'] ?? null,
                             'response_payload' => $decoded,
+                        ]);
+                    }
+
+                    // Send order confirmation email for eSewa payment
+                    try {
+                        Mail::to($order->email)->send(new OrderConfirmation($order));
+                        Log::info("Order confirmation email sent via eSewa to {$order->email} for order #{$order->id}");
+                    } catch (\Exception $e) {
+                        Log::error("Failed to send order confirmation email via eSewa to {$order->email} for order #{$order->id}: " . $e->getMessage(), [
+                            'exception' => get_class($e),
+                            'trace' => $e->getTraceAsString(),
                         ]);
                     }
 

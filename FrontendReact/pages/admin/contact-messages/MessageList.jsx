@@ -89,7 +89,7 @@ const MessageList = () => {
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
       
-      <div className="flex-1 lg:ml-64 ml-0 p-4 sm:p-6 md:p-8">
+      <div className="flex-1 lg:ml-64 ml-0 overflow-hidden p-4 sm:p-6 md:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">

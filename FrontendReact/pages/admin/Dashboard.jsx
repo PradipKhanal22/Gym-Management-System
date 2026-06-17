@@ -471,7 +471,7 @@ const Dashboard = () => {
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
 
-      <div className="flex-1 lg:ml-72 ml-0">
+      <div className="flex-1 lg:ml-72 ml-0 overflow-hidden">
         <header className="relative overflow-visible border-b border-slate-200/80 bg-white/90 text-slate-900 shadow-[0_12px_40px_-24px_rgba(15,23,42,0.5)] backdrop-blur-xl">
           <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(16,185,129,0.06),transparent_35%,rgba(59,130,246,0.06))]" />
           <div className="relative px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
