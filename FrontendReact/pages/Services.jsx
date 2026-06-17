@@ -87,7 +87,7 @@ const Services = () => {
               <p className="text-slate-600 text-sm sm:text-lg max-w-2xl mx-auto">Discover our comprehensive range of programs designed to meet your fitness goals, whether you're a beginner or a seasoned athlete.</p>
            </motion.div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto px-4">
           {loading ? (
             // Loading skeleton
             [...Array(6)].map((_, idx) => (
@@ -155,7 +155,7 @@ const Services = () => {
             <p className="text-slate-600 text-sm sm:text-lg max-w-2xl mx-auto">Everything you need for a comfortable and convenient workout experience. We've thought of every detail.</p>
           </motion.div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-7xl mx-auto relative z-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 max-w-7xl mx-auto relative z-10 px-4">
           {amenities.map((item, idx) => (
             <motion.div 
               key={idx} 
@@ -242,7 +242,7 @@ const Services = () => {
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white rounded-full blur-[150px]"></div>
             </div>
             <div className="text-center relative z-10">
-              <h2 className="text-3xl md:text-5xl font-black text-white mb-6">Ready to Start Your Journey?</h2>
+              <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white mb-6">Ready to Start Your Journey?</h2>
               <p className="text-white/95 text-sm sm:text-base md:text-xl leading-relaxed mb-8 max-w-2xl mx-auto">
                 Join NeonFit today and experience the difference that expert coaching and world-class facilities can make.
               </p>

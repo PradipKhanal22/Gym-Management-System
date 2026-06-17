@@ -101,7 +101,7 @@ const Contact = () => {
       </div>
 
       <Section className="bg-white py-10 sm:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 max-w-7xl mx-auto px-4">
           {/* Info */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -118,7 +118,7 @@ const Contact = () => {
               Have questions about memberships, personal training, or our facility? Drop us a line or visit us in person. Our team is here to support your fitness journey.
             </p>
 
-            <div className="space-y-6 mb-12">
+            <div className="space-y-4 sm:space-y-6 mb-12">
               {[
                 { icon: MapPin, title: "Visit Us", content: "Kawasoti-09, Nawalpur, Gandaki Province, Nepal" },
                 { icon: Phone, title: "Call Us", content: "+977 9804453481" },
@@ -130,7 +130,7 @@ const Contact = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.1 }}
                   viewport={{ once: true }}
-                  className="flex items-start gap-6 p-6 rounded-2xl bg-gradient-to-br from-slate-50 to-white border border-slate-200 hover:border-primary hover:shadow-lg transition-all group"
+                  className="flex items-start gap-4 sm:gap-6 p-4 sm:p-6 rounded-2xl bg-gradient-to-br from-slate-50 to-white border border-slate-200 hover:border-primary hover:shadow-lg transition-all group"
                 >
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-emerald-500 flex items-center justify-center text-white shrink-0 shadow-lg group-hover:scale-110 transition-transform">
                     <item.icon size={24} />
@@ -148,14 +148,14 @@ const Contact = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-gradient-to-br from-slate-900 to-primary p-8 rounded-3xl shadow-xl relative overflow-hidden"
+              className="bg-gradient-to-br from-slate-900 to-primary p-6 sm:p-8 rounded-3xl shadow-xl relative overflow-hidden"
             >
                <div className="absolute inset-0 opacity-10">
                  <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
                </div>
                <div className="flex items-center gap-3 mb-6 relative z-10">
                  <Clock className="text-emerald-400 w-6 h-6" />
-                 <h3 className="text-2xl font-black uppercase text-white">Opening Hours</h3>
+                 <h3 className="text-xl sm:text-2xl font-black uppercase text-white">Opening Hours</h3>
                </div>
                <div className="space-y-4 relative z-10">
                  {[
@@ -163,10 +163,10 @@ const Contact = () => {
                    { day: "Saturday", hours: "6:00 AM - 10:00 PM" },
                    { day: "Sunday", hours: "8:00 AM - 8:00 PM" }
                  ].map((schedule, i) => (
-                   <div key={i} className="flex justify-between items-center border-b border-white/20 pb-4 last:border-0">
-                     <span className="text-white/90 font-semibold">{schedule.day}</span>
-                     <span className={`font-black ${schedule.highlight ? 'text-emerald-400 text-lg' : 'text-white'}`}>{schedule.hours}</span>
-                   </div>
+                    <div key={i} className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-white/20 pb-4 last:border-0 gap-1">
+                      <span className="text-white/90 font-semibold">{schedule.day}</span>
+                      <span className={`font-black ${schedule.highlight ? 'text-emerald-400 text-base sm:text-lg' : 'text-white text-sm sm:text-base'}`}>{schedule.hours}</span>
+                    </div>
                  ))}
                </div>
             </motion.div>
@@ -182,7 +182,7 @@ const Contact = () => {
             <div className="inline-block mb-4">
               <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-bold uppercase tracking-wider">Message Us</span>
             </div>
-            <h3 className="text-3xl font-black text-slate-900 mb-8">Send a <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Message</span></h3>
+            <h3 className="text-2xl sm:text-3xl font-black text-slate-900 mb-8">Send a <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-500">Message</span></h3>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block text-slate-700 text-sm font-black uppercase tracking-wider mb-3">Your Name</label>
@@ -280,7 +280,7 @@ const Contact = () => {
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white rounded-full blur-[150px]"></div>
             </div>
             <div className="text-center relative z-10">
-              <h2 className="text-3xl md:text-5xl font-black text-white mb-6">Ready to Transform Your Life?</h2>
+              <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white mb-6">Ready to Transform Your Life?</h2>
               <p className="text-white/95 text-sm sm:text-base md:text-xl leading-relaxed mb-8 max-w-2xl mx-auto">
                 Join thousands who have already started their fitness journey with NeonFit. Let's achieve greatness together.
               </p>

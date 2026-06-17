@@ -27,7 +27,11 @@ const Footer = () => {
           {/* Brand */}
           <div className="space-y-8">
             <Link to="/" className="flex items-center gap-3 group">
-              <Dumbbell className="w-11 h-11 text-primary transition-all duration-500 group-hover:rotate-12 group-hover:scale-110" />
+              <img 
+                  src="/logo.png" 
+                  alt="NeonFit Logo" 
+                  className="relative z-10 w-16 h-16 md:w-24 md:h-24 transition-transform group-hover:scale-110 duration-500 rounded-full object-cover" 
+                />
               <span className="text-3xl font-black tracking-tighter">
                 NEON<span className="text-transparent bg-clip-text bg-primary">FIT</span>
               </span>

@@ -114,12 +114,26 @@ const Navbar = () => {
   // Lock body scroll when menu is open
   useEffect(() => {
     if (isOpen) {
+      const scrollY = window.scrollY;
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
     } else {
-      document.body.style.overflow = 'unset';
+      const scrollY = document.body.style.top;
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
     };
   }, [isOpen]);
 
@@ -353,6 +367,78 @@ const Navbar = () => {
               </div>
             </Link>
           ))}
+
+          <div className="border-t border-slate-200 my-2"></div>
+
+          {user ? (
+            <Link
+              to="/my-details"
+              onClick={() => setIsOpen(false)}
+              className={`group relative flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 overflow-hidden ${
+                location.pathname === '/my-details'
+                  ? 'bg-gradient-to-r from-primary to-emerald-500 text-white shadow-lg shadow-primary/30 translate-x-1'
+                  : 'bg-white hover:bg-slate-50 text-slate-700 hover:text-primary border border-slate-200 hover:border-primary/30 hover:translate-x-1 hover:shadow-md'
+              }`}
+              style={{ animation: isOpen ? `slideIn 0.4s ease-out ${navLinks.length * 0.08}s both` : 'none' }}
+            >
+              {location.pathname === '/my-details' && (
+                <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-white rounded-r-full"></div>
+              )}
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                location.pathname === '/my-details' ? 'bg-white/20' : 'bg-primary/10'
+              }`}>
+                <User className={`w-5 h-5 ${location.pathname === '/my-details' ? 'text-white' : 'text-primary'}`} />
+              </div>
+              <span className={`text-lg font-bold tracking-wide ${
+                location.pathname === '/my-details' ? 'text-white' : 'group-hover:text-primary'
+              }`}>
+                My Details
+              </span>
+              <div className={`ml-auto transition-transform duration-300 ${
+                location.pathname === '/my-details' ? 'translate-x-0 opacity-100' : 'translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'
+              }`}>
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                  location.pathname === '/my-details' ? 'bg-white/20' : 'bg-primary/10'
+                }`}>
+                  <span className={`text-sm ${location.pathname === '/my-details' ? 'text-white' : 'text-primary'}`}>→</span>
+                </div>
+              </div>
+            </Link>
+          ) : (
+            <Link
+              to="/login"
+              onClick={() => setIsOpen(false)}
+              className={`group relative flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 overflow-hidden ${
+                location.pathname === '/login'
+                  ? 'bg-gradient-to-r from-primary to-emerald-500 text-white shadow-lg shadow-primary/30 translate-x-1'
+                  : 'bg-white hover:bg-slate-50 text-slate-700 hover:text-primary border border-slate-200 hover:border-primary/30 hover:translate-x-1 hover:shadow-md'
+              }`}
+              style={{ animation: isOpen ? `slideIn 0.4s ease-out ${navLinks.length * 0.08}s both` : 'none' }}
+            >
+              {location.pathname === '/login' && (
+                <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-white rounded-r-full"></div>
+              )}
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                location.pathname === '/login' ? 'bg-white/20' : 'bg-primary/10'
+              }`}>
+                <UserCircle className={`w-5 h-5 ${location.pathname === '/login' ? 'text-white' : 'text-primary'}`} />
+              </div>
+              <span className={`text-lg font-bold tracking-wide ${
+                location.pathname === '/login' ? 'text-white' : 'group-hover:text-primary'
+              }`}>
+                Login
+              </span>
+              <div className={`ml-auto transition-transform duration-300 ${
+                location.pathname === '/login' ? 'translate-x-0 opacity-100' : 'translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100'
+              }`}>
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                  location.pathname === '/login' ? 'bg-white/20' : 'bg-primary/10'
+                }`}>
+                  <span className={`text-sm ${location.pathname === '/login' ? 'text-white' : 'text-primary'}`}>→</span>
+                </div>
+              </div>
+            </Link>
+          )}
         </div>
 
         {/* Action Buttons - Fixed at Bottom */}

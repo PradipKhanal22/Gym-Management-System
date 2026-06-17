@@ -89,7 +89,7 @@ const About = () => {
             <img 
               src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=800&h=1000&fit=crop" 
               alt="Gym Interior" 
-              className="relative rounded-3xl shadow-2xl border border-primary/20"
+              className="relative w-full rounded-3xl shadow-2xl border border-primary/20"
             />
           </motion.div>
           <motion.div

@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_URL = 'http://localhost:8000/api';
+import { BASE_URL } from '../api';
 
 // Helper function to get auth token
 const getAuthToken = () => {
@@ -32,7 +31,7 @@ export const contactAPI = {
   sendMessage: async (messageData) => {
     try {
       const response = await axios.post(
-        `${API_URL}/contact-messages`,
+        `${BASE_URL}/contact-messages`,
         messageData,
         { headers: getAuthHeaders() }
       );
@@ -47,7 +46,7 @@ export const contactAPI = {
   getAll: async () => {
     try {
       const response = await axios.get(
-        `${API_URL}/contact-messages`,
+        `${BASE_URL}/contact-messages`,
         { headers: getAuthHeaders() }
       );
       return response.data;
@@ -61,7 +60,7 @@ export const contactAPI = {
   getById: async (id) => {
     try {
       const response = await axios.get(
-        `${API_URL}/contact-messages/${id}`,
+        `${BASE_URL}/contact-messages/${id}`,
         { headers: getAuthHeaders() }
       );
       return response.data;
@@ -75,7 +74,7 @@ export const contactAPI = {
   markAsRead: async (id) => {
     try {
       const response = await axios.put(
-        `${API_URL}/contact-messages/${id}/read`,
+        `${BASE_URL}/contact-messages/${id}/read`,
         {},
         { headers: getAuthHeaders() }
       );
@@ -90,7 +89,7 @@ export const contactAPI = {
   delete: async (id) => {
     try {
       const response = await axios.delete(
-        `${API_URL}/contact-messages/${id}`,
+        `${BASE_URL}/contact-messages/${id}`,
         { headers: getAuthHeaders() }
       );
       return response.data;
